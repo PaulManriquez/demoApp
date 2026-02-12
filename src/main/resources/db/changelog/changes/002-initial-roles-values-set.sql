@@ -1,0 +1,12 @@
+INSERT INTO roles (id, name) VALUES (1, 'VIEW_PRINCIPAL_MENU');
+INSERT INTO roles (id, name) VALUES (2, 'VIEW_BRANCHES');
+INSERT INTO roles (id, name) VALUES (3, 'CREATE_BRANCH');
+INSERT INTO roles (id, name) VALUES (4, 'UPDATE_BRANCH');
+INSERT INTO roles (id, name) VALUES (5, 'DELETE_BRANCH');
+INSERT INTO roles (id, name) VALUES (6, 'VIEW_PRODUCTS');
+INSERT INTO roles (id, name) VALUES (7, 'CREATE_PRODUCT');
+INSERT INTO roles (id, name) VALUES (8, 'UPDATE_PRODUCT');
+INSERT INTO roles (id, name) VALUES (9, 'VIEW_PURCHASES');
+INSERT INTO roles (id, name) VALUES (10, 'CREATE_PURCHASE');
+INSERT INTO roles (id, name) VALUES (11, 'UPDATE_PURCHASE');
+INSERT INTO roles (id, name) VALUES (12, 'ADMIN');
