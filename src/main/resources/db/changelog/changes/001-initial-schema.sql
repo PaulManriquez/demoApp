@@ -2,10 +2,10 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(15),
-    email VARCHAR(100),
+    email VARCHAR(100) NOT NULL UNIQUE,
     start_time TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TINYINT(1) NOT NULL DEFAULT 1
