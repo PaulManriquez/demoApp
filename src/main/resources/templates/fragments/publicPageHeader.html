@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="header">
+
+  <!-- ================= NAVBAR ================= -->
+  <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark"
+       aria-label="Furni navigation bar">
+
+    <div class="container">
+
+      <!-- Brand -->
+      <a class="navbar-brand" th:href="@{/}">
+        Muebles Porto<span>.</span>
+      </a>
+
+      <!-- Mobile Toggle -->
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarsFurni"
+              aria-controls="navbarsFurni"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Links -->
+      <div class="collapse navbar-collapse" id="navbarsFurni">
+        <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/}">Home</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/shop}">Productos</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/about}">Nosotros</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/contact}">Contáctanos</a>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero py-5 bg-light">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+
+        <!-- Text -->
+        <div class="col-lg-5">
+          <div class="intro-excerpt">
+            <h1 class="fw-bold">
+              A un paso de tus espacios soñados
+              <span class="d-block"></span>
+            </h1>
+
+            <p class="mb-4">
+              Te acompañamos en la decoración de tu hogar.
+            </p>
+
+            <div>
+              <a th:href="@{/shop}" class="btn btn-secondary me-2">
+                Descubre tus gustos
+              </a>
+
+              <a th:href="@{https://wa.me/524623059695}"
+                 class="btn btn-outline-dark">
+                Escríbenos
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="col-lg-7 text-center">
+          <div class="hero-img-wrap">
+            <img th:src="@{/img/SofaGeminis.png}"
+                 alt="Sofa modelo Geminis"
+                 class="img-fluid"
+                 loading="lazy">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
