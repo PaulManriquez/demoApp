@@ -30,7 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         http.authorizeHttpRequests( auth-> auth
-                .requestMatchers("/login","/css/**","bootstrap/**").permitAll()
+                .requestMatchers("/","/home","/login","/css/**","bootstrap/**")
+                        .permitAll()
                 .anyRequest().authenticated()
         )
                 .formLogin(form->form
@@ -58,5 +59,4 @@ public class SecurityConfig {
 
         return authProvider;
     }
-
 }

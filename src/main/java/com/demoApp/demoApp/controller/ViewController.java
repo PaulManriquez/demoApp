@@ -11,6 +11,9 @@ public class ViewController {
         return "login";
     }
 
+    @GetMapping("/")
+    public String root() {return "redirect:/home";}
+
     @GetMapping("/home")
     public String homePage(){
         return "home";
