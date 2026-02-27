@@ -16,8 +16,8 @@
 <body>
 
 <!-- ================= HEADER ================= -->
-<header th:insert="fragments/publicPageHeader :: header"></header>
-
+<!--<header th:insert="fragments/publicPageHeader :: header"></header>-->
+<div th:insert="~{fragments/publicPageHeader :: header}"></div>
 
 <!-- ================= WHY CHOOSE SECTION ================= -->
 <section class="py-5 bg-light">
@@ -172,7 +172,8 @@
 
 
 <!-- ================= FOOTER ================= -->
-<footer th:insert="fragments/publicPageFooter :: footer"></footer>
+<!--<footer th:insert="fragments/publicPageFooter :: footer"></footer>-->
+<div th:insert="~{fragments/publicPageFooter :: footer}"></div>
 
 
 <!-- Bootstrap JS -->

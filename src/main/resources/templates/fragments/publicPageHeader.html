@@ -63,7 +63,10 @@
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
+              <!-- USERNAME -->
               <span sec:authentication="name"></span>
+              <!-- IS ADMIN? -->
+              <span sec:authorize="hasAuthority('ROLE_ADMIN')" class="badge bg-danger ms-2"> ADMIN </span>
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end">
@@ -77,6 +80,7 @@
             </ul>
           </li>
           <!-- End Authentication Section -->
+          <!-- sec:authorize="hasAuthority('ROLE_ADMIN')" -->
 
         </ul>
       </div>

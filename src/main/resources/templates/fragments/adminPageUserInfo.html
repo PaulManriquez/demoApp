@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<div th:fragment="userInfo">
+
+  <nav class="navbar navbar-expand navbar-light bg-white border-bottom px-3 py-2">
+
+    <!-- Right Side -->
+    <div class="ms-auto d-flex align-items-center">
+
+      <!-- User Dropdown -->
+      <div class="dropdown" sec:authorize="isAuthenticated()">
+
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+           href="#"
+           id="userDropdown"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+
+          <!-- Username -->
+          <span class="me-2 text-dark">
+              <span sec:authentication="name"></span>
+          </span>
+
+          <!-- ADMIN Badge -->
+          <span sec:authorize="hasRole('ADMIN')"
+                class="badge bg-danger me-2">
+              ADMIN
+          </span>
+
+          <!-- Profile Image -->
+          <img th:src="@{/img/undraw_profile_2.svg}"
+               alt="User profile"
+               class="rounded-circle"
+               width="32"
+               height="32">
+        </a>
+
+        <!-- Dropdown Menu -->
+        <ul class="dropdown-menu dropdown-menu-end shadow"
+            aria-labelledby="userDropdown">
+
+          <li>
+            <a class="dropdown-item" th:href="@{/profile}">
+              <i class="fas fa-user me-2"></i>
+              Profile
+            </a>
+          </li>
+
+          <li><hr class="dropdown-divider"></li>
+
+          <li>
+            <form th:action="@{/logout}" method="post">
+              <button type="submit" class="dropdown-item">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                Logout
+              </button>
+            </form>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+</div>
+
+</body>
+</html>

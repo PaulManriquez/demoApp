@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Muebles Porto - Administración</title>
+
+    <link rel="icon" th:href="@{/favicon.ico}">
+
+    <!-- Bootstrap 5 -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar Fragment -->
+        <aside class="col-md-3 col-lg-2 p-0 bg-dark min-vh-100">
+            <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
+
+            <!-- Topbar Fragment -->
+            <div th:insert="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <!-- Page Content -->
+            <div class="container-fluid py-4">
+                <h1 class="h3 mb-4">Admin Dashboard</h1>
+                <p>Contenido principal aquí.</p>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>

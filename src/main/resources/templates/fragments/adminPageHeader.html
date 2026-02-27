@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="header">
+
+  <div class="d-flex flex-column p-3 text-white bg-dark h-100">
+
+    <!-- Brand -->
+    <a th:href="@{/admin}"
+       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <i class="fas fa-store me-2"></i>
+      <span class="fs-4">Muebles Porto</span>
+    </a>
+
+    <hr class="text-secondary">
+
+    <ul class="nav nav-pills flex-column mb-auto">
+
+      <!-- Dashboard -->
+      <li class="nav-item">
+        <a th:href="@{/admin}"
+           class="nav-link text-white"
+           th:classappend="${position == 'dashboard'} ? ' active bg-primary'">
+          <i class="fas fa-tachometer-alt me-2"></i>
+          Dashboard
+        </a>
+      </li>
+
+      <!-- Productos -->
+      <li>
+        <a th:href="@{/products}"
+           class="nav-link text-white"
+           th:classappend="${position == 'products'} ? ' active bg-primary'">
+          <i class="fas fa-box me-2"></i>
+          Productos
+        </a>
+      </li>
+
+      <!-- Compras -->
+      <li>
+        <a th:href="@{/purchases}"
+           class="nav-link text-white"
+           th:classappend="${position == 'purchase'} ? ' active bg-primary'">
+          <i class="fas fa-shopping-cart me-2"></i>
+          Compras
+        </a>
+      </li>
+
+      <!-- Sucursales -->
+      <li>
+        <a th:href="@{/branches}"
+           class="nav-link text-white"
+           th:classappend="${position == 'branches'} ? ' active bg-primary'">
+          <i class="fas fa-store-alt me-2"></i>
+          Sucursales
+        </a>
+      </li>
+
+    </ul>
+
+    <hr class="text-secondary">
+
+    <small class="text-secondary">Seguridad</small>
+
+    <ul class="nav nav-pills flex-column mt-2">
+
+      <!-- Usuarios -->
+      <li>
+        <a th:href="@{/users}"
+           class="nav-link text-white"
+           th:classappend="${position == 'users'} ? ' active bg-primary'">
+          <i class="fas fa-users me-2"></i>
+          Usuarios
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+</div>
+
+</body>
+</html>
