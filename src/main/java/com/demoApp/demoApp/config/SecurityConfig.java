@@ -30,13 +30,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         http.authorizeHttpRequests( auth-> auth
-                .requestMatchers("/","/home","/login","/css/**","bootstrap/**")
-                        .permitAll()
+                .requestMatchers("/","/home","/login","/css/**","bootstrap/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
                 .formLogin(form->form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home",true)/*Default success url*/
+                        .defaultSuccessUrl("/home",true)/*Default success url redirect*/
                         .permitAll()
                 ).logout(logout -> logout.permitAll());
 
