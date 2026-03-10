@@ -38,7 +38,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/home",true)/*Default success url redirect*/
                         .permitAll()
-                ).logout(logout -> logout.permitAll());
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/access-denied"))
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
