@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Administración</title>
+
+    <link rel="icon" th:href="@{/img/favicon.ico}">
+
+    <!-- Bootstrap 5 -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+
+    <!-- Admin template -->
+    <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+
+    <!-- Datatables -->
+    <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+
+</head>
+
+
+<body id="page-top">
+
+<div id="wrapper">
+
+    <!-- ADMIN SIDEBAR / HEADER -->
+    <header th:replace="~{fragments/adminPageHeader :: header}"></header>
+
+
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <div id="content">
+
+            <!-- USER INFO -->
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid">
+
+                <!-- ALERTS -->
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <!-- ================= NEW BRANCH ================= -->
+
+                <div class="row mb-4">
+
+                    <button class="btn btn-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newBranchForm">
+                        Nueva Sucursal
+                    </button>
+
+
+                    <div class="container collapse mt-3" id="newBranchForm">
+
+                        <form th:action="@{/branches}" method="post" th:object="${branch}">
+
+                            <div class="row mb-4">
+                                <label class="col-sm-2 col-form-label" for="name">Nombre:</label>
+
+                                <div class="col-sm-6">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="name"
+                                           placeholder="Nombre de la sucursal"
+                                           th:field="*{name}"
+                                           required>
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-4">
+
+                                <label class="col-sm-2 col-form-label" for="address">Dirección:</label>
+
+                                <div class="col-sm-6">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="address"
+                                           placeholder="Dirección de la sucursal"
+                                           th:field="*{address}"
+                                           required>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row mb-4">
+
+                                <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>
+
+                                <div class="col-sm-6">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="mapsLink"
+                                           placeholder="Google Maps link"
+                                           th:field="*{mapsLink}"
+                                           required>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-sm-8">
+
+                                <button type="submit"
+                                        class="btn btn-primary"
+                                        style="float:right">
+                                    Guardar
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= BRANCH TABLE ================= -->
+
+                <div class="shadow mb-4">
+
+                    <div class="card">
+
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                Catálogo de Sucursales
+                            </h6>
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered"
+                                       id="dataTable"
+                                       width="100%"
+                                       cellspacing="0">
+
+                                    <thead>
+
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Dirección</th>
+                                        <th>Fecha de creación</th>
+                                        <th>Creador</th>
+                                        <th>Acciones</th>
+                                    </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+
+                                    <tr th:each="branch : ${branches}">
+
+                                        <td th:text="${branch.name}"></td>
+                                        <td th:text="${branch.address}"></td>
+                                        <td th:text="${branch.createdAt}"></td>
+                                        <td th:text="${branch.user.name}"></td>
+
+                                        <td>
+
+                                            <!-- EDIT -->
+
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
+                                                    class="btn btn-primary btn-sm far fa-edit"
+                                                    th:data-id="${branch.id}"
+                                                    th:data-userId="${branch.user.id}"
+                                                    th:data-name="${branch.name}"
+                                                    th:data-address="${branch.address}"
+                                                    th:data-mapsLink="${branch.mapsLink}"
+                                                    onclick="showEditBranchModal(
+                                                    this.getAttribute('data-name'),
+                                                    this.getAttribute('data-address'),
+                                                    this.getAttribute('data-mapsLink'),
+                                                    this.getAttribute('data-id'),
+                                                    this.getAttribute('data-userId'))">
+                                            </button>
+
+
+                                            <!-- MAP -->
+
+                                            <a th:href="${branch.mapsLink}"
+                                               target="_blank"
+                                               class="btn btn-success btn-sm far fa-map"></a>
+
+
+                                            <!-- DISABLE -->
+
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
+                                                    th:if="${branch.active}"
+                                                    class="btn btn-danger btn-sm far fa-trash-alt"
+                                                    th:data-text="'Estas seguro de desactivar la sucursal ' + ${branch.name}"
+                                                    th:data-link="@{/branches/status/{id}(id=${branch.id})}"
+                                                    onclick="showConfirmationModal(
+                                                    this.getAttribute('data-text'),
+                                                    this.getAttribute('data-link'),
+                                                    'Desactivar',
+                                                    'btn-danger')">
+                                            </button>
+
+
+                                            <!-- ENABLE -->
+
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
+                                                    th:if="${!branch.active}"
+                                                    class="btn btn-success btn-sm far fa-check-circle"
+                                                    th:data-text="'Estas seguro de activar la sucursal ' + ${branch.name}"
+                                                    th:data-link="@{/branches/status/{id}(id=${branch.id})}"
+                                                    onclick="showConfirmationModal(
+                                                    this.getAttribute('data-text'),
+                                                    this.getAttribute('data-link'),
+                                                    'Activar',
+                                                    'btn-primary')">
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= EDIT MODAL ================= -->
+
+<div class="modal fade"
+     id="editBranchModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Editar Sucursal
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <form th:action="@{/branches}"
+                      method="post"
+                      id="updateBranchForm"
+                      th:object="${branch}">
+
+                    <input type="hidden" name="_method" value="put">
+
+                    <div class="form-group">
+
+                        <label for="branchModalName">Nombre:</label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="branchModalName"
+                               name="name">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchModalAddress">Dirección:</label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="branchModalAddress"
+                               name="address">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchModalMapsLink">Maps Link:</label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="branchModalMapsLink"
+                               name="mapsLink">
+
+                    </div>
+
+
+                    <input type="hidden" id="branchIdModal" name="id">
+                    <input type="hidden" id="branchUserIdModal" name="user">
+
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Actualizar Sucursal
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIRMATION MODAL -->
+
+<div th:replace="~{fragments/confirmationModal :: confirmationModal}"></div>
+
+
+<!-- ================= SCRIPTS ================= -->
+
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+<script th:src="@{/js/datatables-general.js}"></script>
+
+<script th:src="@{/js/util.js}"></script>
+
+<script th:src="@{/js/branches/branch.js}"></script>
+
+
+</body>
+</html>

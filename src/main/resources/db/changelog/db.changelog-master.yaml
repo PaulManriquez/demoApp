@@ -30,3 +30,11 @@ databaseChangeLog:
         - sqlFile:
             path: changes/004-initial-users_roles-values-set.sql
             relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 005
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/005-initial-branch_table.sql
+            relativeToChangeLogFile: true

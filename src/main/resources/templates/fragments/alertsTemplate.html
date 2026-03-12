@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="alert">
+
+  <div class="mb-4" th:if="${msg != null}">
+
+    <!-- SUCCESS MESSAGE -->
+    <div th:if="${msg.success}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+      <strong th:text="${msg.body}"></strong>
+
+      <button type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"></button>
+
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div th:if="${!msg.success}"
+         class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+
+      <strong th:text="${msg.body}"></strong>
+
+      <button type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"></button>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

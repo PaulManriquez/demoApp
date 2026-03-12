@@ -1,0 +1,14 @@
+CREATE TABLE branches (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    maps_link VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    active TINYINT(1) NOT NULL DEFAULT 1,
+    user_id INT NOT NULL
+);
+
+ALTER TABLE branches
+ADD CONSTRAINT branches_fk_user
+FOREIGN KEY (user_id)
+REFERENCES users(id);
