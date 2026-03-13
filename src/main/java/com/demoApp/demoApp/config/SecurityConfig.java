@@ -32,6 +32,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests( auth-> auth
                 .requestMatchers("/","/home","/login","/css/**","bootstrap/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/branches/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
                 .formLogin(form->form
@@ -40,7 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/access-denied"))
+                        .accessDeniedPage("/access-denied")) /*Go to ErrorController 403*/
                 .logout(logout -> logout.permitAll());
 
         return http.build();

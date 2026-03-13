@@ -21,7 +21,7 @@ public class BranchController {
     @Autowired
     private BranchService branchService;
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public String showAdminHome(Model model){
         model.addAttribute("branches", branchService.getAllBranches()); //Used to convey each branch object to the front
         model.addAttribute("branch",new Branch()); // FORM BINDING: Used as form tag object to point to a branch object
