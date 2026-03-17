@@ -81,6 +81,16 @@
               <!-- DIVIDER -->
               <li><hr class="dropdown-divider"></li>
 
+              <!-- BRANCHES PANEL LINK -->
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <a class="dropdown-item" th:href="@{/branches}">
+                  Branches
+                </a>
+              </li>
+
+              <!-- DIVIDER -->
+              <li><hr class="dropdown-divider"></li>
+
               <li>
                 <form th:action="@{/logout}" method="post">
                   <button type="submit" class="dropdown-item">

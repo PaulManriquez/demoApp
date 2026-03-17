@@ -62,68 +62,69 @@
                     </button>
 
 
-                    <div class="container collapse mt-3" id="newBranchForm">
+                    <div class="collapse mt-3" id="newBranchForm">
+                        <div class="card card-body">
 
-                        <form th:action="@{/branches}" method="post" th:object="${branch}">
+                            <form th:action="@{/branches}" method="post" th:object="${branch}">
 
-                            <div class="row mb-4">
-                                <label class="col-sm-2 col-form-label" for="name">Nombre:</label>
+                                <div class="row mb-4">
+                                    <label class="col-sm-2 col-form-label" for="name">Nombre:</label>
 
-                                <div class="col-sm-6">
-                                    <input type="text"
-                                           class="form-control"
-                                           id="name"
-                                           placeholder="Nombre de la sucursal"
-                                           th:field="*{name}"
-                                           required>
-                                </div>
-                            </div>
-
-
-                            <div class="row mb-4">
-
-                                <label class="col-sm-2 col-form-label" for="address">Dirección:</label>
-
-                                <div class="col-sm-6">
-                                    <input type="text"
-                                           class="form-control"
-                                           id="address"
-                                           placeholder="Dirección de la sucursal"
-                                           th:field="*{address}"
-                                           required>
+                                    <div class="col-sm-6">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="name"
+                                               placeholder="Nombre de la sucursal"
+                                               th:field="*{name}"
+                                               required>
+                                    </div>
                                 </div>
 
-                            </div>
 
+                                <div class="row mb-4">
 
-                            <div class="row mb-4">
+                                    <label class="col-sm-2 col-form-label" for="address">Dirección:</label>
 
-                                <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="address"
+                                               placeholder="Dirección de la sucursal"
+                                               th:field="*{address}"
+                                               required>
+                                    </div>
 
-                                <div class="col-sm-6">
-                                    <input type="text"
-                                           class="form-control"
-                                           id="mapsLink"
-                                           placeholder="Google Maps link"
-                                           th:field="*{mapsLink}"
-                                           required>
                                 </div>
 
-                            </div>
+
+                                <div class="row mb-4">
+
+                                    <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>
+
+                                    <div class="col-sm-6">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="mapsLink"
+                                               placeholder="Google Maps link"
+                                               th:field="*{mapsLink}"
+                                               required>
+                                    </div>
+
+                                </div>
 
 
-                            <div class="col-sm-8">
+                                <div class="col-sm-8">
 
-                                <button type="submit"
-                                        class="btn btn-primary"
-                                        style="float:right">
-                                    Guardar
-                                </button>
+                                    <button type="submit"
+                                            class="btn btn-primary"
+                                            style="float:right">
+                                        Guardar
+                                    </button>
 
-                            </div>
+                                </div>
 
-                        </form>
-
+                            </form>
+                        </div>
                     </div>
 
                 </div>
@@ -295,7 +296,7 @@
                         <input type="text"
                                class="form-control"
                                id="branchModalName"
-                               name="name">
+                               name="name"><!-- name in branch entity -->
 
                     </div>
 
@@ -307,7 +308,7 @@
                         <input type="text"
                                class="form-control"
                                id="branchModalAddress"
-                               name="address">
+                               name="address"> <!-- address in branch entity -->
 
                     </div>
 
@@ -319,14 +320,14 @@
                         <input type="text"
                                class="form-control"
                                id="branchModalMapsLink"
-                               name="mapsLink">
+                               name="mapsLink"> <!-- mapsLink [JAVA PROPERTY] in branch entity -->
 
                     </div>
 
 
                     <input type="hidden" id="branchIdModal" name="id">
-                    <input type="hidden" id="branchUserIdModal" name="user">
-
+<!--                    <input type="hidden" id="branchUserIdModal" name="user">-->
+<!--                    <input type="hidden" id="branchUserIdModal" name="user.id" value="1">-->
 
                     <div class="modal-footer">
 
@@ -361,22 +362,17 @@
 
 <!-- ================= SCRIPTS ================= -->
 
-<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-
-<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-
-<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<!-- Bootstrap 5 -->
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 <script th:src="@{/js/sb-admin-2.min.js}"></script>
 
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
 <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
-
 <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
 
 <script th:src="@{/js/datatables-general.js}"></script>
-
 <script th:src="@{/js/util.js}"></script>
-
 <script th:src="@{/js/branches/branch.js}"></script>
 
 

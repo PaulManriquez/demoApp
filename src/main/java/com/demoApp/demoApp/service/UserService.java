@@ -51,4 +51,13 @@ public class UserService implements UserDetailsService {
         );
     }
 
+
+    public User findByUsername(String username_or_mail) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsernameOrEmailWithRoles(username_or_mail)
+                .orElseThrow(() ->new UsernameNotFoundException("User not found"));
+
+        return user;
+    }
+
 }
