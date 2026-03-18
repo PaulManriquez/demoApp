@@ -3,6 +3,7 @@ package com.demoApp.demoApp.controller;
 import com.demoApp.demoApp.Model.Message;
 import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -42,7 +43,7 @@ public class BranchController {
     }
 
     @PostMapping({"", "/"})
-    public String saveBranch(Branch branch, BindingResult result, RedirectAttributes attributes){
+    public String saveBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
         if(result.hasErrors()){
             for(ObjectError error: result.getAllErrors()){

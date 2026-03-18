@@ -178,8 +178,8 @@
 
                                             <!-- EDIT -->
 
-                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
-                                                    class="btn btn-primary btn-sm far fa-edit"
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH') or hasAuthority('ROLE_ADMIN')"
+                                                    class="btn btn-primary btn-sm"
                                                     th:data-id="${branch.id}"
                                                     th:data-userId="${branch.user.id}"
                                                     th:data-name="${branch.name}"
@@ -191,6 +191,7 @@
                                                     this.getAttribute('data-mapsLink'),
                                                     this.getAttribute('data-id'),
                                                     this.getAttribute('data-userId'))">
+                                                <i class="fas fa-edit"></i> Edit
                                             </button>
 
 
@@ -198,12 +199,12 @@
 
                                             <a th:href="${branch.mapsLink}"
                                                target="_blank"
-                                               class="btn btn-success btn-sm far fa-map"></a>
+                                               class="btn btn-success btn-sm far fa-map">Maps Link</a>
 
 
                                             <!-- DISABLE -->
 
-                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH') or hasAuthority('ROLE_ADMIN')"
                                                     th:if="${branch.active}"
                                                     class="btn btn-danger btn-sm far fa-trash-alt"
                                                     th:data-text="'Estas seguro de desactivar la sucursal ' + ${branch.name}"
@@ -218,7 +219,7 @@
 
                                             <!-- ENABLE -->
 
-                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH')"
+                                            <button sec:authorize="hasAuthority('UPDATE_BRANCH') or hasAuthority('ROLE_ADMIN')"
                                                     th:if="${!branch.active}"
                                                     class="btn btn-success btn-sm far fa-check-circle"
                                                     th:data-text="'Estas seguro de activar la sucursal ' + ${branch.name}"
@@ -365,15 +366,16 @@
 <!-- Bootstrap 5 -->
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
+<!-- Branch Custom Function -->
+<script th:src="@{/js/branches/branch.js}"></script>
+
+<!-- JQuery -->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+
+<!-- sb admin2 -->
 <script th:src="@{/js/sb-admin-2.min.js}"></script>
 
-<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
-<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
-
-<script th:src="@{/js/datatables-general.js}"></script>
-<script th:src="@{/js/util.js}"></script>
-<script th:src="@{/js/branches/branch.js}"></script>
+<!-- ================= SCRIPTS ================= -->
 
 
 </body>
