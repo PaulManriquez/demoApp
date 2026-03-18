@@ -13,4 +13,8 @@ public class ErrorController {
 
     @GetMapping("/page-not-found")
     public String pageNotFound(){return "error/404";}
+
+    @GetMapping("/bad-request")
+    public String badRequest(){return "error/400";}
+
 }

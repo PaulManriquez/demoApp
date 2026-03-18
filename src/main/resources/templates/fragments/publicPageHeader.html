@@ -79,7 +79,7 @@
               </li>
 
               <!-- DIVIDER -->
-              <li><hr class="dropdown-divider"></li>
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
 
               <!-- BRANCHES PANEL LINK -->
               <li sec:authorize="hasAuthority('ROLE_ADMIN')">
@@ -89,7 +89,7 @@
               </li>
 
               <!-- DIVIDER -->
-              <li><hr class="dropdown-divider"></li>
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
 
               <li>
                 <form th:action="@{/logout}" method="post">
