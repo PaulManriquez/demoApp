@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,14 +68,7 @@ public class BranchController {
         return "redirect:/branches/";
     }
 
-//    @GetMapping("/status/{id}")
-//    public String deleteBranch(@PathVariable("id") int branchId, RedirectAttributes attributes){
-//        Message message = branchService.updateStatus(branchId);
-//        attributes.addFlashAttribute("msg", message);
-//        return "redirect:/branches/";
-//    }
-
-    //PutMapping accepts a POST??
+    //EDIT BUTTON
     @PutMapping("/update-branch")
     public String uptateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
@@ -90,6 +84,16 @@ public class BranchController {
         Message message = branchService.updateBranch(branch);
         attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
 
+        return "redirect:/branches/";
+    }
+
+    @GetMapping("/status/{id}")
+    public String deleteBranch(@PathVariable("id") int branchId, RedirectAttributes attributes){
+
+        logger.info("In deleteBranch() | {}",BranchController.class);
+
+        Message message = branchService.updateStatus(branchId);
+        attributes.addFlashAttribute("The status has been updated", message);
         return "redirect:/branches/";
     }
 

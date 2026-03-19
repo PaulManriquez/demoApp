@@ -1,3 +1,4 @@
+// ================= EDIT MODAL =================
 function showEditBranchModal(name, address, mapsLink, id, userId) {
 
     document.getElementById('branchModalName').value = name;
@@ -8,5 +9,20 @@ function showEditBranchModal(name, address, mapsLink, id, userId) {
     // Bootstrap 5 way                            This html front end is being called
     const modalElement = document.getElementById('editBranchModal');
     const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+// ================= CONFIRMATION MODAL =================
+function showConfirmationModal(text, link, action, btnClass) {
+
+    document.getElementById('confirmationModalLabel').innerText = action;
+    document.getElementById('confirmationModalContent').innerText = text;
+
+    const confirmBtn = document.getElementById('confirmationModalHref');
+    confirmBtn.href = link;
+    confirmBtn.className = 'btn ' + btnClass;
+    confirmBtn.innerText = action;
+
+    const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
     modal.show();
 }

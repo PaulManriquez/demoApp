@@ -51,4 +51,19 @@ public class BranchService {
         return new Message("Branch Sucursal failed unexpectedly",true);
     }
 
+    public Message updateStatus(int branchId){
+        Optional<Branch> optBranch = branchRepository.findById(branchId);
+
+        if(optBranch.isPresent()){
+            Branch branchToUpdate = optBranch.get();
+            branchToUpdate.setActive(!branchToUpdate.isActive()); // Toggle active
+
+            branchRepository.save(branchToUpdate);
+            String message = "Branch updated status current active: " + branchToUpdate.isActive();
+            return new Message(message,true);
+        }
+
+        return new Message("Failed in updating state for sucursal | updateStatus() method",true);
+    }
+
 }
