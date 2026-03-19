@@ -283,12 +283,15 @@
 
             <div class="modal-body">
 
-                <form th:action="@{/branches}"
+                <form th:action="@{/branches/update-branch}"
                       method="post"
                       id="updateBranchForm"
                       th:object="${branch}">
 
+                    <!-- Spring interprets this as  "Oh you in deed wanted a put, so it is interpreted
+                    in the controller"-->
                     <input type="hidden" name="_method" value="put">
+                    <!-- ========================================================================= -->
 
                     <div class="form-group">
 

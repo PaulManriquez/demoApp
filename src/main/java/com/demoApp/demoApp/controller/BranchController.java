@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -60,9 +61,35 @@ public class BranchController {
         branch.setUser(user);
 
         //Save new branch
-        branchService.save(branch);
+        Message message = branchService.save(branch);
         //
-        attributes.addFlashAttribute("msg",new Message("Sucursal guardada con exito",true));
+        attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
+        return "redirect:/branches/";
+    }
+
+//    @GetMapping("/status/{id}")
+//    public String deleteBranch(@PathVariable("id") int branchId, RedirectAttributes attributes){
+//        Message message = branchService.updateStatus(branchId);
+//        attributes.addFlashAttribute("msg", message);
+//        return "redirect:/branches/";
+//    }
+
+    //PutMapping accepts a POST??
+    @PutMapping("/update-branch")
+    public String uptateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
+
+        logger.info("In uptateBranch() | {}",BranchController.class);
+
+        if(result.hasErrors()){
+            for(ObjectError error: result.getAllErrors()){
+                logger.warn("Error: {}",error.getDefaultMessage());
+            }
+            return "administration/branches/index";
+        }
+
+        Message message = branchService.updateBranch(branch);
+        attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
+
         return "redirect:/branches/";
     }
 
