@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deploy to Vercel"
+  short_description: "Standardize Vercel deploy checks"
+  default_prompt: "Use $deploy-vercel to validate build assumptions, audit env vars, and verify a Vercel production deployment."
