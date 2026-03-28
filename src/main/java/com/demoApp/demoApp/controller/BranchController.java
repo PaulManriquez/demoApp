@@ -4,6 +4,7 @@ import com.demoApp.demoApp.Model.Message;
 import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -11,7 +12,6 @@ import com.demoApp.demoApp.entity.Branch;
 import com.demoApp.demoApp.service.BranchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -30,12 +30,17 @@ public class BranchController {
     private static final Logger logger =
             LoggerFactory.getLogger(BranchController.class);
 
-    @Autowired
-    private BranchService branchService;
+    private final BranchService branchService;
+
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public BranchController(BranchService branchService, UserService userService) {
+        this.branchService = branchService;
+        this.userService = userService;
+    }
 
+    // Load the branches admin page with the current branch list and an empty form model.
     @GetMapping({"", "/"})
     public String showAdminHome(Model model){
         model.addAttribute("branches", branchService.getAllBranches()); //Used to convey each branch object to the front
@@ -44,6 +49,7 @@ public class BranchController {
         return "administration/branches/index";
     }
 
+    // Validate and create a new branch, assigning the authenticated user as owner.
     @PostMapping({"", "/"})
     public String saveBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
@@ -68,9 +74,9 @@ public class BranchController {
         return "redirect:/branches/";
     }
 
-    //EDIT BUTTON
+    // Validate and persist edits to an existing branch, then redirect back to the list.
     @PutMapping("/update-branch")
-    public String uptateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
+    public String updateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
         logger.info("In uptateBranch() | {}",BranchController.class);
 
@@ -87,6 +93,7 @@ public class BranchController {
         return "redirect:/branches/";
     }
 
+    // Toggle the status of a branch identified by its id and return to the list view.
     @GetMapping("/status/{id}")
     public String deleteBranch(@PathVariable("id") int branchId, RedirectAttributes attributes){
 
@@ -97,6 +104,7 @@ public class BranchController {
         return "redirect:/branches/";
     }
 
+    // Add shared view metadata used to highlight the active administration section.
     @ModelAttribute
     public void setGenerics(Model model){
         model.addAttribute("position", "branches");
