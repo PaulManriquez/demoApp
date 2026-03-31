@@ -1,5 +1,5 @@
 // ================= EDIT MODAL =================
-function showEditBranchModal(name, address, mapsLink, id, userId) {
+function showEditBranchModal(name, address, mapsLink, id) {
 
     document.getElementById('branchModalName').value = name;
     document.getElementById('branchModalAddress').value = address;

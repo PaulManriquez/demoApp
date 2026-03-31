@@ -53,10 +53,7 @@ public class BranchController {
     @PostMapping({"", "/"})
     public String saveBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
-        if(result.hasErrors()){
-            for(ObjectError error: result.getAllErrors()){
-                logger.warn("Error: {}",error.getDefaultMessage());
-            }
+        if (hasValidationErrors(result)) {
             return "administration/branches/index";
         }
 
@@ -80,10 +77,7 @@ public class BranchController {
 
         logger.info("In uptateBranch() | {}",BranchController.class);
 
-        if(result.hasErrors()){
-            for(ObjectError error: result.getAllErrors()){
-                logger.warn("Error: {}",error.getDefaultMessage());
-            }
+        if (hasValidationErrors(result)) {
             return "administration/branches/index";
         }
 
@@ -108,5 +102,17 @@ public class BranchController {
     @ModelAttribute
     public void setGenerics(Model model){
         model.addAttribute("position", "branches");
+    }
+
+    private boolean hasValidationErrors(BindingResult result) {
+        if (!result.hasErrors()) {
+            return false;
+        }
+
+        for (ObjectError error : result.getAllErrors()) {
+            logger.warn("Error: {}", error.getDefaultMessage());
+        }
+
+        return true;
     }
 }

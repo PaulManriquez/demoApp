@@ -181,7 +181,6 @@
                                             <button sec:authorize="hasAuthority('UPDATE_BRANCH') or hasAuthority('ROLE_ADMIN')"
                                                     class="btn btn-primary btn-sm"
                                                     th:data-id="${branch.id}"
-                                                    th:data-userId="${branch.user.id}"
                                                     th:data-name="${branch.name}"
                                                     th:data-address="${branch.address}"
                                                     th:data-mapsLink="${branch.mapsLink}"
@@ -189,8 +188,7 @@
                                                     this.getAttribute('data-name'),
                                                     this.getAttribute('data-address'),
                                                     this.getAttribute('data-mapsLink'),
-                                                    this.getAttribute('data-id'),
-                                                    this.getAttribute('data-userId'))">
+                                                    this.getAttribute('data-id'))">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
 
