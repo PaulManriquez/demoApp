@@ -42,7 +42,7 @@ public class BranchController {
 
     // Load the branches admin page with the current branch list and an empty form model.
     @GetMapping({"", "/"})
-    public String showAdminHome(Model model){
+    public String showBranchesMainPage(Model model){
         model.addAttribute("branches", branchService.getAllBranches()); //Used to convey each branch object to the front
         model.addAttribute("branch",new Branch()); // FORM BINDING: Used as form tag object to point to a branch object
 
@@ -75,7 +75,7 @@ public class BranchController {
     @PutMapping("/update-branch")
     public String updateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
 
-        logger.info("In uptateBranch() | {}",BranchController.class);
+        logger.info("In updateBranch() | {}",BranchController.class);
 
         if (hasValidationErrors(result)) {
             return "administration/branches/index";
@@ -89,9 +89,9 @@ public class BranchController {
 
     // Toggle the status of a branch identified by its id and return to the list view.
     @GetMapping("/status/{id}")
-    public String deleteBranch(@PathVariable("id") int branchId, RedirectAttributes attributes){
+    public String toggleBranchStatusOnOff(@PathVariable("id") int branchId, RedirectAttributes attributes){
 
-        logger.info("In deleteBranch() | {}",BranchController.class);
+        logger.info("In toggleBranchStatusOnOff() | {}",BranchController.class);
 
         Message message = branchService.updateStatus(branchId);
         attributes.addFlashAttribute("The status has been updated", message);

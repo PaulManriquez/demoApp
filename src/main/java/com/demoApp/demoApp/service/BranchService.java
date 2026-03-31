@@ -13,8 +13,12 @@ import java.util.Optional;
 @Service
 public class BranchService {
 
+    private final BranchRepository branchRepository;
+
     @Autowired
-    private BranchRepository branchRepository;
+    public BranchService(BranchRepository branchRepository) {
+        this.branchRepository = branchRepository;
+    }
 
     public List<Branch> getAllBranches(){
         return branchRepository.findAll();
