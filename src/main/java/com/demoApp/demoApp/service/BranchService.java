@@ -2,6 +2,7 @@ package com.demoApp.demoApp.service;
 
 import com.demoApp.demoApp.Model.Message;
 import com.demoApp.demoApp.entity.Branch;
+import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.repository.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,12 @@ public class BranchService {
 
     private final BranchRepository branchRepository;
 
+    private final UserService userService;
+
     @Autowired
-    public BranchService(BranchRepository branchRepository) {
+    public BranchService(BranchRepository branchRepository, UserService userService) {
         this.branchRepository = branchRepository;
+        this.userService = userService;
     }
 
     public List<Branch> getAllBranches(){
@@ -25,11 +29,20 @@ public class BranchService {
     }
 
     public Message save(Branch branch){
+
+        // Get the authenticated user | findUserByUsernameOrEmail already throws an exception that's
+        // why no need to check if user is null
+        User user = userService.getCurrentlyAuthenticatedUser();
+
+        // Set the owner of the branch
         if(branch.getId()==null){ // Why check if branch is null?
             branch.setCreatedAt(Instant.now());
             branch.setActive(true);
         }
 
+        branch.setUser(user);
+
+        // Save the branch
         branchRepository.save(branch);
         return new Message("Sucursal guardada con exito",true);
     }

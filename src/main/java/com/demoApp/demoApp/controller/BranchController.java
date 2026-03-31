@@ -1,12 +1,8 @@
 package com.demoApp.demoApp.controller;
 
 import com.demoApp.demoApp.Model.Message;
-import com.demoApp.demoApp.entity.User;
-import com.demoApp.demoApp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import com.demoApp.demoApp.entity.Branch;
 import com.demoApp.demoApp.service.BranchService;
@@ -32,12 +28,9 @@ public class BranchController {
 
     private final BranchService branchService;
 
-    private final UserService userService;
-
     @Autowired
-    public BranchController(BranchService branchService, UserService userService) {
+    public BranchController(BranchService branchService) {
         this.branchService = branchService;
-        this.userService = userService;
     }
 
     // Load the branches admin page with the current branch list and an empty form model.
@@ -57,17 +50,10 @@ public class BranchController {
             return "administration/branches/index";
         }
 
-        Authentication  auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-
-        logger.info("=== {} === {}",user.getUsername(),user.getRoles());
-
-        branch.setUser(user);
-
-        //Save new branch
+        // Save the branch with the authenticated user as owner
         Message message = branchService.save(branch);
-        //
         attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
+
         return "redirect:/branches/";
     }
 
