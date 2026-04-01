@@ -1,6 +1,6 @@
 package com.demoApp.demoApp.service;
 
-import com.demoApp.demoApp.Model.Message;
+import com.demoApp.demoApp.model.Message;
 import com.demoApp.demoApp.entity.Branch;
 import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.repository.BranchRepository;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BranchService {
@@ -28,17 +27,18 @@ public class BranchService {
         return branchRepository.findAll();
     }
 
-    public Message save(Branch branch){
+    public Message saveCreateBranch(Branch branch){
+
+        if (branch.getId() != null) {
+            return new Message("La sucursal ya existe", false);
+        }
 
         // Get the authenticated user. This service now expects a valid authenticated user or an exception.
         User user = userService.getCurrentlyAuthenticatedUser();
 
-        // Set the owner of the branch
-        if(branch.getId()==null){ // Why check if branch is null?
-            branch.setCreatedAt(Instant.now());
-            branch.setActive(true);
-        }
-
+        // Initialize creation-only fields for a new branch.
+        branch.setCreatedAt(Instant.now());
+        branch.setActive(true);
         branch.setUser(user);
 
         // Save the branch
@@ -52,33 +52,38 @@ public class BranchService {
             return new Message("La sucursal no existe", false);
         }
 
-        Optional<Branch> optBranch = branchRepository.findById(branch.getId());
-        if (optBranch.isPresent()) {
-            Branch branchToUpdate = optBranch.get();
-            //Note: id already comes in the branch object ,  so here is not being set/updated
-            branchToUpdate.setName(branch.getName());
-            branchToUpdate.setAddress(branch.getAddress());
-            branchToUpdate.setMapsLink(branch.getMapsLink());
+        try {
+            Branch branchToUpdate = getBranchById(branch.getId());
+            updateEditableBranchFields(branchToUpdate, branch);
 
             branchRepository.save(branchToUpdate);//Automatically knows by the id that is referring to this branch
             return new Message("Sucursal actualizada con exito", true);
+        } catch (IllegalArgumentException ex) {
+            return new Message("No se encontro la sucursal a actualizar", false);
         }
-
-        return new Message("No se encontro la sucursal a actualizar", false);
     }
 
-    public Message toggleBranchStatusVisibleOnOff(int branchId){
-        Optional<Branch> optBranch = branchRepository.findById(branchId);
-
-        if (optBranch.isPresent()) {
-            Branch branchToUpdate = optBranch.get();
+    public Message toggleBranchActiveStatus(int branchId){
+        try {
+            Branch branchToUpdate = getBranchById(branchId);
             branchToUpdate.setActive(!branchToUpdate.isActive()); // Toggle active
 
             branchRepository.save(branchToUpdate);
             return new Message("Estado de la sucursal actualizado con exito", true);
+        } catch (IllegalArgumentException ex) {
+            return new Message("No se pudo actualizar el estado de la sucursal", false);
         }
+    }
 
-        return new Message("No se pudo actualizar el estado de la sucursal", false);
+    private Branch getBranchById(Integer branchId) {
+        return branchRepository.findById(branchId)
+                .orElseThrow(() -> new IllegalArgumentException("La sucursal no existe"));
+    }
+
+    private void updateEditableBranchFields(Branch targetBranch, Branch sourceBranch) {
+        targetBranch.setName(sourceBranch.getName());
+        targetBranch.setAddress(sourceBranch.getAddress());
+        targetBranch.setMapsLink(sourceBranch.getMapsLink());
     }
 
 }

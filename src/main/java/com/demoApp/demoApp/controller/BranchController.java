@@ -1,6 +1,6 @@
 package com.demoApp.demoApp.controller;
 
-import com.demoApp.demoApp.Model.Message;
+import com.demoApp.demoApp.model.Message;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -52,7 +52,7 @@ public class BranchController {
         }
 
         // Save the branch with the authenticated user as owner
-        Message message = branchService.save(branch);
+        Message message = branchService.saveCreateBranch(branch);
         attributes.addFlashAttribute("msg", message);
 
         return "redirect:/branches/";
@@ -77,11 +77,11 @@ public class BranchController {
 
     // Toggle the status of a branch identified by its id and return to the list view.
     @GetMapping("/status/toggle/{id}")
-    public String toggleBranchStatusVisibleOnOff(@PathVariable("id") int branchId, RedirectAttributes attributes){
+    public String toggleBranchActiveStatus(@PathVariable("id") int branchId, RedirectAttributes attributes){
 
-        logger.info("In toggleBranchStatusVisibleOnOff() | {}",BranchController.class);
+        logger.info("In toggleBranchActiveStatus() | {}",BranchController.class);
 
-        Message message = branchService.toggleBranchStatusVisibleOnOff(branchId);
+        Message message = branchService.toggleBranchActiveStatus(branchId);
         attributes.addFlashAttribute("msg", message);
         return "redirect:/branches/";
     }
