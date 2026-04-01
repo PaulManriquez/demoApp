@@ -3,6 +3,7 @@ package com.demoApp.demoApp.service;
 import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,10 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    private static final String USER_NOT_FOUND_MESSAGE = "User not found";
+    private static final String NO_AUTHENTICATED_USER_MESSAGE = "No authenticated user in security context";
 
     private final UserRepository userRepository;
 
@@ -28,10 +31,9 @@ public class UserService implements UserDetailsService {
             LoggerFactory.getLogger(UserService.class);
 
     @Override
-    public UserDetails loadUserByUsername(String username_or_mail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsernameOrEmailWithRoles(username_or_mail)
-                .orElseThrow(() ->new UsernameNotFoundException("User not found"));
+        User user = getUserByUsernameOrEmail(usernameOrEmail);
 
         //DB roles into Spring Security authorities
         List<SimpleGrantedAuthority> authorities =
@@ -42,10 +44,7 @@ public class UserService implements UserDetailsService {
                         ))
                         .toList();
 
-        //Role Trace
-        user.getRoles().forEach(role ->
-                logger.info("User role loaded: {} | {}", role.getName(),UserService.class)
-        );
+        logger.debug("Loaded user '{}' with {} roles", user.getUsername(), user.getRoles().size());
 
         return new org.springframework.security.core.userdetails.User(
           user.getUsername(),
@@ -54,25 +53,25 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public User findUserByUsernameOrEmail(String username_or_mail) throws UsernameNotFoundException {
-
-        User user = userRepository.findByUsernameOrEmailWithRoles(username_or_mail)
-                .orElseThrow(() ->new UsernameNotFoundException("User not found"));
-
-        return user;
+    public User findUserByUsernameOrEmail(String usernameOrEmail) throws UsernameNotFoundException {
+        return getUserByUsernameOrEmail(usernameOrEmail);
     }
 
     public User getCurrentlyAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
-            logger.info("No authenticated user in security context");
-            return null;
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            throw new UsernameNotFoundException(NO_AUTHENTICATED_USER_MESSAGE);
         }
 
         User user = findUserByUsernameOrEmail(auth.getName());
-        logger.info("=== {} === {}", user.getUsername(), user.getRoles());
+        logger.debug("Resolved currently authenticated user '{}'", user.getUsername());
         return user;
+    }
+
+    private User getUserByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsernameOrEmailWithRoles(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MESSAGE));
     }
 
 }

@@ -30,8 +30,7 @@ public class BranchService {
 
     public Message save(Branch branch){
 
-        // Get the authenticated user | findUserByUsernameOrEmail already throws an exception that's
-        // why no need to check if user is null
+        // Get the authenticated user. This service now expects a valid authenticated user or an exception.
         User user = userService.getCurrentlyAuthenticatedUser();
 
         // Set the owner of the branch
