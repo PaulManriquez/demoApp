@@ -44,43 +44,42 @@ public class BranchService {
 
         // Save the branch
         branchRepository.save(branch);
-        return new Message("Sucursal guardada con exito",true);
+        return new Message("Sucursal guardada con exito", true);
     }
 
     public Message updateBranch(Branch branch){
         //Ensure id branch exist
-        if(branch.getId() == null){
-            return new Message("Branch Sucursal error updating branch doesnt exist", false);
+        if (branch.getId() == null) {
+            return new Message("La sucursal no existe", false);
         }
 
         Optional<Branch> optBranch = branchRepository.findById(branch.getId());
-        if(optBranch.isPresent()){
-            Branch branchToUpdate =  optBranch.get();
+        if (optBranch.isPresent()) {
+            Branch branchToUpdate = optBranch.get();
             //Note: id already comes in the branch object ,  so here is not being set/updated
             branchToUpdate.setName(branch.getName());
             branchToUpdate.setAddress(branch.getAddress());
             branchToUpdate.setMapsLink(branch.getMapsLink());
 
             branchRepository.save(branchToUpdate);//Automatically knows by the id that is referring to this branch
-            return new Message("Branch Sucursal updated correctly",true);
+            return new Message("Sucursal actualizada con exito", true);
         }
 
-        return new Message("Branch Sucursal failed unexpectedly",true);
+        return new Message("No se encontro la sucursal a actualizar", false);
     }
 
-    public Message updateStatus(int branchId){
+    public Message toggleBranchStatusVisibleOnOff(int branchId){
         Optional<Branch> optBranch = branchRepository.findById(branchId);
 
-        if(optBranch.isPresent()){
+        if (optBranch.isPresent()) {
             Branch branchToUpdate = optBranch.get();
             branchToUpdate.setActive(!branchToUpdate.isActive()); // Toggle active
 
             branchRepository.save(branchToUpdate);
-            String message = "Branch updated status current active: " + branchToUpdate.isActive();
-            return new Message(message,true);
+            return new Message("Estado de la sucursal actualizado con exito", true);
         }
 
-        return new Message("Failed in updating state for sucursal | updateStatus() method",true);
+        return new Message("No se pudo actualizar el estado de la sucursal", false);
     }
 
 }

@@ -206,7 +206,7 @@
                                                     th:if="${branch.active}"
                                                     class="btn btn-danger btn-sm far fa-trash-alt"
                                                     th:data-text="'Estas seguro de desactivar la sucursal ' + ${branch.name}"
-                                                    th:data-link="@{/branches/status/{id}(id=${branch.id})}"
+                                                    th:data-link="@{/branches/status/toggle/{id}(id=${branch.id})}"
                                                     onclick="showConfirmationModal(
                                                     this.getAttribute('data-text'),
                                                     this.getAttribute('data-link'),
@@ -222,7 +222,7 @@
                                                     th:if="${!branch.active}"
                                                     class="btn btn-success btn-sm far fa-check-circle"
                                                     th:data-text="'Estas seguro de activar la sucursal ' + ${branch.name}"
-                                                    th:data-link="@{/branches/status/{id}(id=${branch.id})}"
+                                                    th:data-link="@{/branches/status/toggle/{id}(id=${branch.id})}"
                                                     onclick="showConfirmationModal(
                                                     this.getAttribute('data-text'),
                                                     this.getAttribute('data-link'),

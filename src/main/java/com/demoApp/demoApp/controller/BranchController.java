@@ -44,43 +44,45 @@ public class BranchController {
 
     // Validate and create a new branch, assigning the authenticated user as owner.
     @PostMapping({"", "/"})
-    public String saveBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
+    public String saveBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes, Model model){
 
         if (hasValidationErrors(result)) {
+            model.addAttribute("branches", branchService.getAllBranches());
             return "administration/branches/index";
         }
 
         // Save the branch with the authenticated user as owner
         Message message = branchService.save(branch);
-        attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
+        attributes.addFlashAttribute("msg", message);
 
         return "redirect:/branches/";
     }
 
     // Validate and persist edits to an existing branch, then redirect back to the list.
     @PutMapping("/update-branch")
-    public String updateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes){
+    public String updateBranch(@Valid Branch branch, BindingResult result, RedirectAttributes attributes, Model model){
 
         logger.info("In updateBranch() | {}",BranchController.class);
 
         if (hasValidationErrors(result)) {
+            model.addAttribute("branches", branchService.getAllBranches());
             return "administration/branches/index";
         }
 
         Message message = branchService.updateBranch(branch);
-        attributes.addFlashAttribute("msg",new Message(message.getBody(), message.isSuccess()));
+        attributes.addFlashAttribute("msg", message);
 
         return "redirect:/branches/";
     }
 
     // Toggle the status of a branch identified by its id and return to the list view.
-    @GetMapping("/status/{id}")
-    public String toggleBranchStatusOnOff(@PathVariable("id") int branchId, RedirectAttributes attributes){
+    @GetMapping("/status/toggle/{id}")
+    public String toggleBranchStatusVisibleOnOff(@PathVariable("id") int branchId, RedirectAttributes attributes){
 
-        logger.info("In toggleBranchStatusOnOff() | {}",BranchController.class);
+        logger.info("In toggleBranchStatusVisibleOnOff() | {}",BranchController.class);
 
-        Message message = branchService.updateStatus(branchId);
-        attributes.addFlashAttribute("The status has been updated", message);
+        Message message = branchService.toggleBranchStatusVisibleOnOff(branchId);
+        attributes.addFlashAttribute("msg", message);
         return "redirect:/branches/";
     }
 
