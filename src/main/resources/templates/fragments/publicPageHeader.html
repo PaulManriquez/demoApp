@@ -91,6 +91,16 @@
               <!-- DIVIDER -->
               <li sec:authorize="hasAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
 
+              <!-- PRODUCTS PANEL LINK -->
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <a class="dropdown-item" th:href="@{/products}">
+                  Products
+                </a>
+              </li>
+
+              <!-- DIVIDER -->
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
+
               <li>
                 <form th:action="@{/logout}" method="post">
                   <button type="submit" class="dropdown-item">

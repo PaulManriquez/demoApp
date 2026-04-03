@@ -26,3 +26,17 @@ function showConfirmationModal(text, link, action, btnClass) {
     const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
     modal.show();
 }
+
+// ================= PRODUCT PAGE MODAL =================
+function showProductModal(name, items, wholesalePrice, retailPrice, special, description, id) {
+
+    document.getElementById('productModalName').value = name;
+    document.getElementById('productModalItems').value = items;
+    document.getElementById('productModalWholesalePrice').value = wholesalePrice;
+    document.getElementById('productModalRetailPrice').value = retailPrice;
+    document.getElementById('productModalDescription').value = description;
+    document.getElementById('productIdModal').value = id;
+
+    const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+    modal.show();
+}

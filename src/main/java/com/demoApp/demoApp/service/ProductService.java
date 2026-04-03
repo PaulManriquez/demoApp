@@ -28,7 +28,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Message save(Product product) {
+    public Message saveCreateProduct(Product product) {
         if (product.getId() != null){
             return new Message("El producto ya existe", false);
         }
@@ -72,40 +72,5 @@ public class ProductService {
         productToUpdate.setRetailPrice(product.getRetailPrice());
         productToUpdate.setSpecial(product.isSpecial());
     }
-
-//    public Message updateBranch(Branch branch){
-//        //Ensure id branch exist
-//        if (branch.getId() == null) {
-//            return new Message("La sucursal no existe", false);
-//        }
-//
-//        try {
-//            Branch branchToUpdate = getBranchById(branch.getId());
-//            updateEditableBranchFields(branchToUpdate, branch);
-//
-//            branchRepository.save(branchToUpdate);//Automatically knows by the id that is referring to this branch
-//            return new Message("Sucursal actualizada con exito", true);
-//        } catch (IllegalArgumentException ex) {
-//            return new Message("No se encontro la sucursal a actualizar", false);
-//        }
-//    }
-
-//
-//    public Message updateProduct(Product product) {
-//        Optional<Product> optionalProduct = productRepository.findById(product.getId());
-//
-//        if (optionalProduct.isPresent()) {
-//            Product productToBeUpdated = optionalProduct.get();
-//            productToBeUpdated.setName(product.getName());
-//            productToBeUpdated.setItems(product.getItems());
-//            productToBeUpdated.setWholesalePrice(product.getWholesalePrice());
-//            productToBeUpdated.setRetailPrice(product.getRetailPrice());
-//            productToBeUpdated.setSpecial(product.isSpecial());
-//            productRepository.save(productToBeUpdated);
-//            return new Message("Producto actualizado con ėxito", true);
-//        } else {
-//            return new Message("Hay un problema al actualizar el producto.", false);
-//        }
-//    }
 
 }

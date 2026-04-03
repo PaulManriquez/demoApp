@@ -216,20 +216,8 @@
 
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
-<script>
-function showProductModal(name, items, wholesalePrice, retailPrice, special, description, id) {
-
-    document.getElementById('productModalName').value = name;
-    document.getElementById('productModalItems').value = items;
-    document.getElementById('productModalWholesalePrice').value = wholesalePrice;
-    document.getElementById('productModalRetailPrice').value = retailPrice;
-    document.getElementById('productModalDescription').value = description;
-    document.getElementById('productIdModal').value = id;
-
-    const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
-    modal.show();
-}
-</script>
+<!-- Branch Custom Functions -->
+<script th:src="@{/js/branches/branch.js}"></script>
 
 </body>
 </html>
