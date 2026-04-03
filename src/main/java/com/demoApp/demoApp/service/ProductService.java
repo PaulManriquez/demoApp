@@ -46,36 +46,50 @@ public class ProductService {
         return new Message("Producto guardado con exito", true);
     }
 
-//    public Message saveCreateBranch(Branch branch){
-//
-//        if (branch.getId() != null) {
-//            return new Message("La sucursal ya existe", false);
+    public Message updateProduct(Product product) {
+
+        // Verify product do not exist already
+        if(product.getId() == null){
+            return new Message("El producto no existe, no es valido", false);
+        }
+
+        //Update the product fields
+        try{
+            Product productToUpdate = productRepository.findById(product.getId()).get();
+            updateEditableProductFields(productToUpdate,product);
+
+            productRepository.save(productToUpdate);
+            return new Message("Producto actualizado con ėxito", true);
+        }catch (IllegalArgumentException ex){
+            return new Message("No se encontro el producto a actualizar", false);
+        }
+    }
+
+    private void updateEditableProductFields(Product productToUpdate, Product product){
+        productToUpdate.setName(product.getName());
+        productToUpdate.setItems(product.getItems());
+        productToUpdate.setWholesalePrice(product.getWholesalePrice());
+        productToUpdate.setRetailPrice(product.getRetailPrice());
+        productToUpdate.setSpecial(product.isSpecial());
+    }
+
+//    public Message updateBranch(Branch branch){
+//        //Ensure id branch exist
+//        if (branch.getId() == null) {
+//            return new Message("La sucursal no existe", false);
 //        }
 //
-//        // Get the authenticated user. This service now expects a valid authenticated user or an exception.
-//        User user = userService.getCurrentlyAuthenticatedUser();
+//        try {
+//            Branch branchToUpdate = getBranchById(branch.getId());
+//            updateEditableBranchFields(branchToUpdate, branch);
 //
-//        // Initialize creation-only fields for a new branch.
-//        branch.setCreatedAt(Instant.now());
-//        branch.setActive(true);
-//        branch.setUser(user);
-//
-//        // Save the branch
-//        branchRepository.save(branch);
-//        return new Message("Sucursal guardada con exito", true);
-//    }
-
-
-//
-//    public Message save(Product product) {
-//        if (product.getId()== null){
-//            product.setCreatedAt(Instant.now());
-//            product.setActive(true);
+//            branchRepository.save(branchToUpdate);//Automatically knows by the id that is referring to this branch
+//            return new Message("Sucursal actualizada con exito", true);
+//        } catch (IllegalArgumentException ex) {
+//            return new Message("No se encontro la sucursal a actualizar", false);
 //        }
-//
-//        productRepository.save(product);
-//        return new Message("Producto guardado con exito", true);
 //    }
+
 //
 //    public Message updateProduct(Product product) {
 //        Optional<Product> optionalProduct = productRepository.findById(product.getId());
