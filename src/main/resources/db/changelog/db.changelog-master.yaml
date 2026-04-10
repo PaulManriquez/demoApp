@@ -46,3 +46,43 @@ databaseChangeLog:
         - sqlFile:
             path: changes/006-initial-product-table.sql
             relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 007
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/007-initial-providers.sql
+            relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 008
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/008-initial-clients.sql
+            relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 009
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/009-initial-purchases.sql
+            relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 010
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/010-initial-sales.sql
+            relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 011
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/011-initial-stock.sql
+            relativeToChangeLogFile: true

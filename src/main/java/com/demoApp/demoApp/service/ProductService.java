@@ -1,6 +1,5 @@
 package com.demoApp.demoApp.service;
 
-import com.demoApp.demoApp.entity.Branch;
 import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.User;
 import com.demoApp.demoApp.model.Message;
