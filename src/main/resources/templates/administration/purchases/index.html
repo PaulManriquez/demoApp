@@ -118,13 +118,14 @@
                           class="btn btn-primary btn-sm"
                           th:data-id="${purchase.id}"
                           th:data-date="${purchase.date}"
-                          th:data-providerId="${purchase.provider.id}"
-                          th:data-userId="${purchase.user.id}"
+                          th:data-providerid="${purchase.provider.id}"
+                          th:data-userid="${purchase.user.id}"
                           onclick="showPurchaseModal(
-                                                this.getAttribute('data-date'),
-                                                this.getAttribute('data-id'),
-                                                this.getAttribute('data-providerId'),
-                                                this.getAttribute('data-userId'))">
+                                                      this.dataset.date,
+                                                      this.dataset.id,
+                                                      this.dataset.providerid,
+                                                      this.dataset.userid
+                                                )">
 
                     <i class="fas fa-edit"></i> Edit
                   </button>
@@ -172,18 +173,25 @@
 
       <div class="modal-body">
 
-        <form th:action="@{/purchases/}"
+        <form th:action="@{/purchases/update}"
               th:object="${purchase}"
               method="post">
 
+          <!-- Hidden put method -->
+          <input type="hidden" name="_method" value="put">
+
+          <!-- IDs -->
+          <input type="hidden" id="purchaseModalId" th:field="*{id}">
+          <input type="hidden" id="purchaseModalUserId" th:field="*{user.id}">
+
           <div class="mb-3">
             <label>Fecha</label>
-            <input type="date" th:field="*{date}" class="form-control">
+            <input type="date" id="purchaseModalDate" th:field="*{date}" class="form-control">
           </div>
 
           <div class="mb-3">
             <label>Proveedor</label>
-            <select th:field="*{provider.id}" class="form-control">
+            <select id="purchaseModalProvider" th:field="*{provider.id}" class="form-control">
               <option value="">Seleccione un proveedor</option>
               <option th:each="provider : ${providers}"
                       th:value="${provider.id}"
@@ -212,7 +220,7 @@
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 <!-- JS -->
-<script th:src="@{/js/purchases/purchase.js}"></script>
+<script th:src="@{/js/branches/branch.js}"></script>
 
 <!-- OPTIONAL -->
 <script th:src="@{/js/sb-admin-2.min.js}"></script>

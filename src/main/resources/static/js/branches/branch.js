@@ -40,3 +40,30 @@ function showProductModal(name, items, wholesalePrice, retailPrice, special, des
     const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
     modal.show();
 }
+
+// ================= PURCHASE EDIT MODAL =================
+function showPurchaseModal(date, id, providerId, userId) {
+
+    console.log("Opening purchase modal:", { date, id, providerId, userId });
+
+    // In coming date
+    if (date) {
+        // If coming as ISO or full string thus ensure YYYY-MM-DD
+        const formattedDate = date.substring(0, 10);
+        document.querySelector('#editPurchaseModal input[type="date"]').value = formattedDate;
+    }
+
+    // Set purchase ID
+    document.getElementById('purchaseModalId').value = id;
+
+    // Set provider
+    document.querySelector('#editPurchaseModal select').value = providerId;
+
+    // Set user
+    document.getElementById('purchaseModalUserId').value = userId;
+
+    // Open modal (Bootstrap 5)
+    const modalElement = document.getElementById('editPurchaseModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}

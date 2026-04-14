@@ -61,4 +61,43 @@ public class PurchaseService {
 
         return new Message("Compra guardada con exito", true);
     }
+
+    public Message updatePurchase(Purchase purchase){
+
+        if(purchase.getId() == null){ return new Message("La compra no existe",false);}
+
+        try{
+
+            // Get the purchase object to be updated
+            Purchase purchaseToUpdate = purchaseRepository.findById(
+                    purchase.getId()).orElseThrow(
+                            () -> new IllegalArgumentException("La compra no existe"));
+
+            // Get provider to update
+            Provider provider = providerService.getProviderById(purchase.getProvider().getId());
+
+            //===== Update process ====
+
+            // Update purchase date
+            purchaseToUpdate.setDate(purchase.getDate());
+
+            // Update Created at
+            purchaseToUpdate.setCreatedAt(purchase.getCreatedAt());
+
+            // Update purchase provider
+            purchaseToUpdate.setProvider(provider);
+
+            //=========================
+
+            // Save / Update -> Purchase
+            purchaseRepository.save(purchaseToUpdate);
+
+            return new Message("Compra actualizada con exito", true);
+
+        }catch (IllegalArgumentException ex){
+            return new Message("No se encontro la compra a actualizar",false);
+        }
+
+    }
+
 }

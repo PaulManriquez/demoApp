@@ -29,11 +29,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
+        // Roles must be updated, for now we will let only admin
         http.authorizeHttpRequests( auth-> auth
                 .requestMatchers("/","/home","/login","/css/**","bootstrap/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/branches/**").hasRole("ADMIN")
                         .requestMatchers("/products/**").hasRole("ADMIN")
+                        .requestMatchers("/purchases/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
                 .formLogin(form->form
