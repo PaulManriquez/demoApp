@@ -4,6 +4,7 @@ import com.demoApp.demoApp.entity.Purchase;
 import com.demoApp.demoApp.model.Message;
 import com.demoApp.demoApp.service.ProviderService;
 import com.demoApp.demoApp.service.PurchaseService;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,6 @@ public class PurchaseController {
     private static final Logger logger =
             LoggerFactory.getLogger(PurchaseController.class);
 
-
     private final PurchaseService purchaseService;
 
     private final ProviderService providerService;
@@ -34,15 +34,12 @@ public class PurchaseController {
     }
 
     @GetMapping({"", "/"})
-    public String showAdminHome(Model model) {
-        model.addAttribute("purchase", new Purchase());
-        model.addAttribute("purchases", purchaseService.getAllPurchases());
-        model.addAttribute("providers", providerService.getAllProviders());
-        return "administration/purchases/index";
+    public String showPurchasesMainPage(Model model) {
+        return reloadPurchasesPage(model, new Purchase());
     }
 
     @PostMapping("/")
-    public String savePurchase(Purchase purchase, BindingResult result, RedirectAttributes attributes, Model model) {
+    public String savePurchase(@Valid Purchase purchase, BindingResult result, RedirectAttributes attributes, Model model) {
 
         logger.info(
                 "savePurchase() received date={}, providerId={}, userId={}",
@@ -52,7 +49,7 @@ public class PurchaseController {
         );
 
         if (hasValidationErrors(result)) {
-            return "administration/purchases/index";
+            return reloadPurchasesPage(model, purchase);
         }
 
         Message message = purchaseService.saveCreatePurchase(purchase);
@@ -64,6 +61,13 @@ public class PurchaseController {
     @ModelAttribute
     public void setGenerics(Model model) {
         model.addAttribute("position", "purchase");
+    }
+
+    private String reloadPurchasesPage(Model model, Purchase purchase) {
+        model.addAttribute("purchase", purchase);
+        model.addAttribute("purchases", purchaseService.getAllPurchases());
+        model.addAttribute("providers", providerService.getAllProviders());
+        return "administration/purchases/index";
     }
 
     private boolean hasValidationErrors(BindingResult result) {
