@@ -1,11 +1,15 @@
 package com.demoApp.demoApp.controller;
 
 import com.demoApp.demoApp.entity.Purchase;
+import com.demoApp.demoApp.entity.Stock;
 import com.demoApp.demoApp.model.Message;
+import com.demoApp.demoApp.service.ProductService;
 import com.demoApp.demoApp.service.ProviderService;
 import com.demoApp.demoApp.service.PurchaseService;
+import com.demoApp.demoApp.service.StockService;
 import com.demoApp.demoApp.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +37,19 @@ public class PurchaseController {
 
     private final UserService userService;
 
-    public PurchaseController(PurchaseService purchaseService, ProviderService providerService, UserService userService) {
+    private final ProductService productService;
+
+    private final StockService stockService;
+
+    @Autowired
+    public PurchaseController(PurchaseService purchaseService, ProviderService providerService,
+                              UserService userService, ProductService productService,
+                              StockService stockService) {
         this.purchaseService = purchaseService;
         this.providerService = providerService;
         this.userService = userService;
+        this.productService = productService;
+        this.stockService = stockService;
     }
 
     @GetMapping({"", "/"})
@@ -88,6 +102,31 @@ public class PurchaseController {
         attributes.addFlashAttribute("msg", message);
 
         return "redirect:/purchases/";
+    }
+
+    // “Now manage the ITEMS of this purchase” | The products that belong to the purchase
+    @GetMapping("/products/{id}")
+    public String showEditPurchaseProducts(@PathVariable Integer id, Model model) {
+
+        // Providers
+        model.addAttribute("purchase",purchaseService.getPurchaseById(id));
+        // Products
+        model.addAttribute("products",productService.getAllProducts());
+        // stockItems
+        model.addAttribute("stockItems", stockService.getStockByPurchaseId(id));
+
+        // Page
+        return "administration/purchases/products";
+    }
+
+    @PostMapping("/products/add")
+    public String addProductToPurchase(Stock stock ,RedirectAttributes attributes){
+
+        Message message = stockService.saveProductStock(stock);
+
+        attributes.addFlashAttribute("msg", message);
+
+        return "redirect:/purchases/products/" + stock.getPurchase().getId();
     }
 
     @ModelAttribute

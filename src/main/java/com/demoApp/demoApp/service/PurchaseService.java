@@ -32,6 +32,8 @@ public class PurchaseService {
         return purchaseRepository.findAll();
     }
 
+    public Purchase getPurchaseById(Integer purchaseId){ return purchaseRepository.getById(purchaseId); }
+
     public Message saveCreatePurchase(Purchase purchase) {
 
         // Verify purchase do not exist already
