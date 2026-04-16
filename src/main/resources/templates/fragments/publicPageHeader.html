@@ -98,6 +98,9 @@
                 </a>
               </li>
 
+              <!-- DIVIDER -->
+              <li sec:authorize="hasAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
+
               <!-- PURCHASES PANEL LINK -->
               <li sec:authorize="hasAuthority('ROLE_ADMIN')">
                 <a class="dropdown-item" th:href="@{/purchases}">

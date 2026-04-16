@@ -82,6 +82,7 @@ public class PurchaseController {
         return "redirect:/purchases/";
     }
 
+    // | Edit button |
     @PutMapping("/update")
     public String updatePurchase(Purchase purchase, BindingResult result, RedirectAttributes attributes){
 
@@ -105,15 +106,22 @@ public class PurchaseController {
     }
 
     // “Now manage the ITEMS of this purchase” | The products that belong to the purchase
+    // | Productos | button
     @GetMapping("/products/{id}")
     public String showEditPurchaseProducts(@PathVariable Integer id, Model model) {
 
         // Providers
+        // Purchase ID [ lo know to witch purchase will be linked the products]
         model.addAttribute("purchase",purchaseService.getPurchaseById(id));
+
         // Products
+        // Load all the products [ lo be able to link it to the purchase]
         model.addAttribute("products",productService.getAllProducts());
-        // stockItems
+        // stockItems related to this purchase
         model.addAttribute("stockItems", stockService.getStockByPurchaseId(id));
+
+        // Total stock price by customer
+        model.addAttribute("totalPurchase",stockService.getTotalSalePriceByPurchaseId(id));
 
         // Page
         return "administration/purchases/products";
@@ -126,7 +134,7 @@ public class PurchaseController {
 
         attributes.addFlashAttribute("msg", message);
 
-        return "redirect:/purchases/products/" + stock.getPurchase().getId();
+        return "redirect:/purchases/products/" + stock.getPurchase().getId(); // Building a dynamic url
     }
 
     @ModelAttribute

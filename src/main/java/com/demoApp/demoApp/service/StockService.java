@@ -6,6 +6,7 @@ import com.demoApp.demoApp.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -25,6 +26,10 @@ public class StockService {
     public Message saveProductStock(Stock stock){
         stockRepository.save(stock);
         return new Message("Producto guardado en esta compra",true);
+    }
+
+    public BigDecimal getTotalSalePriceByPurchaseId(Integer purchaseId) {
+        return stockRepository.sumSalePriceByPurchaseId(purchaseId);
     }
 
 }

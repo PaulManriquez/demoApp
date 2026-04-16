@@ -93,6 +93,11 @@
                                     <input type="text" class="form-control" name="description">
                                 </div>
 
+                                <div class="mb-3">
+                                    <label>Precio de venta:</label>
+                                    <input type="number" step="0.01" class="form-control" name="salePrice" required>
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">Agregar</button>
 
                             </form>
@@ -121,6 +126,7 @@
                                 <th>Producto</th>
                                 <th>Descripción</th>
                                 <th>Precio compra</th>
+                                <th>Precio de venta</th>
                             </tr>
                             </thead>
 
@@ -131,7 +137,16 @@
                                 <td th:text="${item.product.name}"></td>
                                 <td th:text="${item.description}"></td>
                                 <td th:text="${item.purchasePrice}"></td>
+                                <td th:text="${item.salePrice}"></td>
+                            </tr>
 
+                            <tr> </tr>
+
+                            <tr>
+                                <th>Total $:</th>
+                                <td colspan="3"
+                                    th:text="${totalPurchase}">
+                                </td>
                             </tr>
 
                             </tbody>
