@@ -5,6 +5,7 @@ import com.demoApp.demoApp.model.Message;
 import com.demoApp.demoApp.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +27,21 @@ public class StockService {
     public Message saveProductStock(Stock stock){
         stockRepository.save(stock);
         return new Message("Producto guardado en esta compra",true);
+    }
+
+    @Transactional
+    public Message addProductsToPurchase(Stock stock, Integer quantity) {
+        for (int i = 0; i < quantity; i++) {
+            Stock newStock = new Stock();
+            newStock.setPurchase(stock.getPurchase());
+            newStock.setProduct(stock.getProduct());
+            newStock.setDescription(stock.getDescription());
+            newStock.setPurchasePrice(stock.getPurchasePrice());
+            newStock.setSalePrice(stock.getSalePrice());
+            stockRepository.save(newStock);
+        }
+
+        return new Message("Producto guardado en esta compra", true);
     }
 
     public BigDecimal getTotalSalePriceByPurchaseId(Integer purchaseId) {

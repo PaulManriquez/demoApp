@@ -1,6 +1,5 @@
 package com.demoApp.demoApp.controller;
 
-import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.Purchase;
 import com.demoApp.demoApp.entity.Stock;
 import com.demoApp.demoApp.model.Message;
@@ -8,7 +7,6 @@ import com.demoApp.demoApp.service.ProductService;
 import com.demoApp.demoApp.service.ProviderService;
 import com.demoApp.demoApp.service.PurchaseService;
 import com.demoApp.demoApp.service.StockService;
-import com.demoApp.demoApp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -26,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
-
 @Controller
 @RequestMapping("/purchases")
 public class PurchaseController {
@@ -38,20 +34,15 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     private final ProviderService providerService;
-
-    private final UserService userService;
-
     private final ProductService productService;
 
     private final StockService stockService;
 
     @Autowired
     public PurchaseController(PurchaseService purchaseService, ProviderService providerService,
-                              UserService userService, ProductService productService,
-                              StockService stockService) {
+                              ProductService productService, StockService stockService) {
         this.purchaseService = purchaseService;
         this.providerService = providerService;
-        this.userService = userService;
         this.productService = productService;
         this.stockService = stockService;
     }
@@ -66,10 +57,9 @@ public class PurchaseController {
 
 
         logger.info(
-                "updatePurchase() received date={}, providerId={}, userId={}",
+                "savePurchase() received date={}, providerId={}",
                 purchase.getDate(),
-                purchase.getProvider() != null ? purchase.getProvider().getId() : null,
-                userService.getCurrentlyAuthenticatedUser()
+                purchase.getProvider() != null ? purchase.getProvider().getId() : null
         );
 
         // Validate Errors
@@ -88,17 +78,19 @@ public class PurchaseController {
 
     // | Edit button |
     @PutMapping("/update")
-    public String updatePurchase(Purchase purchase, BindingResult result, RedirectAttributes attributes){
+    public String updatePurchase(@Valid Purchase purchase, BindingResult result,
+                                 RedirectAttributes attributes, Model model){
 
         logger.info(
-                "updatePurchase() received date={}, providerId={}, userId={}",
+                "updatePurchase() received date={}, providerId={}",
                 purchase.getDate(),
-                purchase.getProvider() != null ? purchase.getProvider().getId() : null,
-                userService.getCurrentlyAuthenticatedUser()
+                purchase.getProvider() != null ? purchase.getProvider().getId() : null
         );
 
-        // Re direct to main page
-        if(hasValidationErrors(result)){return "redirect:/purchases/";}
+        // Reload the form with validation errors
+        if (hasValidationErrors(result)) {
+            return reloadPurchasesPage(model, purchase);
+        }
 
         // Update purchase
         Message message = purchaseService.updatePurchase(purchase);
@@ -135,31 +127,7 @@ public class PurchaseController {
     public String addProductToPurchase(Stock stock ,RedirectAttributes attributes,
                                        @RequestParam Integer quantity){
 
-        Message message = null;
-
-        Purchase purchase = stock.getPurchase();
-
-        Product product = stock.getProduct();
-
-        String description = stock.getDescription();
-
-        BigDecimal purchasePrice = stock.getPurchasePrice();
-
-        BigDecimal salePrice = stock.getSalePrice();
-
-        for(int i=0; i< quantity; i++){
-
-            Stock newStock = new Stock();
-
-            newStock.setPurchase(purchase);
-            newStock.setProduct(product);
-            newStock.setDescription(description);
-            newStock.setPurchasePrice(purchasePrice);
-            newStock.setSalePrice(salePrice);
-
-            message = stockService.saveProductStock(newStock);
-            System.out.println(i);
-        }
+        Message message = stockService.addProductsToPurchase(stock, quantity);
 
         attributes.addFlashAttribute("msg", message);
 
