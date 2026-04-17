@@ -1,5 +1,6 @@
 package com.demoApp.demoApp.controller;
 
+import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.Purchase;
 import com.demoApp.demoApp.entity.Stock;
 import com.demoApp.demoApp.model.Message;
@@ -22,7 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/purchases")
@@ -128,9 +132,34 @@ public class PurchaseController {
     }
 
     @PostMapping("/products/add")
-    public String addProductToPurchase(Stock stock ,RedirectAttributes attributes){
+    public String addProductToPurchase(Stock stock ,RedirectAttributes attributes,
+                                       @RequestParam Integer quantity){
 
-        Message message = stockService.saveProductStock(stock);
+        Message message = null;
+
+        Purchase purchase = stock.getPurchase();
+
+        Product product = stock.getProduct();
+
+        String description = stock.getDescription();
+
+        BigDecimal purchasePrice = stock.getPurchasePrice();
+
+        BigDecimal salePrice = stock.getSalePrice();
+
+        for(int i=0; i< quantity; i++){
+
+            Stock newStock = new Stock();
+
+            newStock.setPurchase(purchase);
+            newStock.setProduct(product);
+            newStock.setDescription(description);
+            newStock.setPurchasePrice(purchasePrice);
+            newStock.setSalePrice(salePrice);
+
+            message = stockService.saveProductStock(newStock);
+            System.out.println(i);
+        }
 
         attributes.addFlashAttribute("msg", message);
 
