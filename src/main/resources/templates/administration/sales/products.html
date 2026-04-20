@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Productos Venta</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <header th:replace="~{fragments/adminPageHeader :: header}"></header>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid">
+
+                <!-- PAGE TITLE -->
+                <div class="mb-4">
+                    <h3 class="text-success fw-bold"> Gestión de Venta</h3>
+                    <small class="text-muted">Agrega productos y completa la venta</small>
+                </div>
+
+                <!-- ALERT -->
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <!-- ================= SALE INFO ================= -->
+
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-success text-white fw-bold">
+                         Información de la venta
+                    </div>
+                    <div class="card-body">
+
+                        <p><strong>Cliente:</strong>
+                            <span th:text="${sale.client.firstName}"></span>
+                        </p>
+
+                        <p><strong>Fecha:</strong>
+                            <span th:text="${sale.date}"></span>
+                        </p>
+
+                    </div>
+                </div>
+
+                <!-- ================= ADD PRODUCT ================= -->
+
+                <div class="card shadow mb-4">
+
+                    <div class="card-header fw-bold">
+                         Agregar producto a la venta
+                    </div>
+
+                    <div class="card-body">
+
+                        <form th:action="@{/sales/products/add}" method="post">
+
+                            <input type="hidden" name="sale.id" th:value="${sale.id}">
+
+                            <div class="mb-3">
+                                <label>Producto:</label>
+                                <select class="form-control" id="productSelect" name="product.id">
+
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.id}"
+                                            th:text="${product.name}"
+                                            th:attr="data-price=${product.retailPrice}">
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Cantidad:</label>
+                                <input type="number" name="quantity" class="form-control" min="1" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Precio de venta:</label>
+                                <input type="number"
+                                       step="0.01"
+                                       name="price"
+                                       id="priceInput"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <button class="btn btn-success">
+                                Agregar
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- ================= SOLD ITEMS ================= -->
+
+                <div class="card shadow mb-4">
+
+                    <div class="card-header fw-bold">
+                         Productos vendidos
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered">
+
+                            <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr th:each="item : ${saleDetails}">
+                                <td th:text="${item.product.name}"></td>
+                                <td th:text="${item.quantity}"></td>
+                                <td th:text="${item.price}"></td>
+                                <td th:text="${item.subtotal}"></td>
+                            </tr>
+
+                            <tr>
+                                <th>Total</th>
+                                <td colspan="3" th:text="${total}"></td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div th:replace="~{fragments/confirmationModal :: confirmationModal}"></div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- JS -->
+<script th:src="@{/js/branches/branch.js}"></script>
+
+<!-- OPTIONAL -->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+</body>
+</html>

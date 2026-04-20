@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Ventas</title>
+  <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="wrapper">
+
+  <!-- HEADER -->
+  <header th:replace="~{fragments/adminPageHeader :: header}"></header>
+
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+
+      <!-- USER INFO -->
+      <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+      <div class="container-fluid">
+
+        <!-- ALERT -->
+        <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+        <!-- ================= NEW SALE ================= -->
+
+        <div class="card shadow mb-4">
+
+          <div class="card-header bg-primary text-white">
+            Nueva Venta
+          </div>
+
+          <div class="card-body">
+
+            <form th:action="@{/sales/}" th:object="${sale}" method="post">
+
+              <div class="mb-3">
+                <label>Fecha:</label>
+                <input type="date" th:field="*{date}" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label>Cliente:</label>
+                <select th:field="*{client.id}" class="form-control">
+
+                  <option th:each="client : ${clients}"
+                          th:value="${client.id}"
+                          th:text="${client.firstName + ' ' + client.lastName}">
+                  </option>
+
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                Guardar
+              </button>
+
+            </form>
+
+          </div>
+        </div>
+
+        <!-- ================= SALES HISTORY ================= -->
+
+        <div class="card shadow mb-4">
+
+          <div class="card-header">
+            Historial de ventas
+          </div>
+
+          <div class="card-body">
+
+            <table class="table table-bordered">
+
+              <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Acciones</th>
+              </tr>
+              </thead>
+
+              <tbody>
+
+              <tr th:each="sale : ${sales}">
+
+                <td th:text="${sale.date}"></td>
+                <td th:text="${sale.client.firstName}"></td>
+
+                <td>
+
+                  <a class="btn btn-success btn-sm"
+                     th:href="@{/sales/products/{id}(id=${sale.id})}">
+                    Productos
+                  </a>
+
+                </td>
+
+              </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div th:replace="~{fragments/confirmationModal :: confirmationModal}"></div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- JS -->
+<script th:src="@{/js/branches/branch.js}"></script>
+
+<!-- OPTIONAL -->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+</body>
+</html>

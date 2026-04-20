@@ -131,7 +131,7 @@ public class PurchaseController {
 
         attributes.addFlashAttribute("msg", message);
 
-        return "redirect:/purchases/products/" + stock.getPurchase().getId(); // Building a dynamic url
+        return "redirect:/purchases/products/" + stock.getPurchase().getId(); // Building a dynamic url // [ To appear in the page where you added the product]
     }
 
     @ModelAttribute

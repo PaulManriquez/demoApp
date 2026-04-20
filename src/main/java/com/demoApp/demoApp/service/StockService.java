@@ -48,4 +48,12 @@ public class StockService {
         return stockRepository.sumSalePriceByPurchaseId(purchaseId);
     }
 
+    public List<Stock> findAvailableStockProductByProductId(Integer productId, Integer quantity){
+        return stockRepository.findAvailableStockByProductId(productId, quantity);
+    }
+
+    public List<Stock> getAvailableStock(){
+        return stockRepository.getAllAvailableStock();
+    }
+
 }

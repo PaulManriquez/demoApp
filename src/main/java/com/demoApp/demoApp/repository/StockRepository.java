@@ -17,4 +17,18 @@ public interface StockRepository extends JpaRepository<Stock,Integer> {
     // COALESCE : Ensure that at least you have a 0 if you have nulls values
     @Query("SELECT COALESCE(SUM(s.salePrice), 0) FROM Stock s WHERE s.purchase.id = :purchaseId")
     BigDecimal sumSalePriceByPurchaseId(@Param("purchaseId") Integer purchaseId);
+
+    @Query(value = """
+            SELECT *
+            FROM stock
+            WHERE product_id = :productID
+              AND sale_id IS NULL
+            LIMIT :findNProductsAvailable
+            """, nativeQuery = true)
+    List<Stock> findAvailableStockByProductId
+            (@Param("productID") Integer productID,
+             @Param("findNProductsAvailable") Integer findNProductsAvailable);
+
+    @Query(value = "SELECT * FROM stock WHERE sale_id IS NULL", nativeQuery = true)
+    List<Stock> getAllAvailableStock();
 }

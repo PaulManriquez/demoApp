@@ -67,3 +67,26 @@ function showPurchaseModal(date, id, providerId, userId) {
     const modal = new bootstrap.Modal(modalElement);
     modal.show();
 }
+
+// Administration/sales/products
+// Dynamic price display
+document.addEventListener("DOMContentLoaded", function () {
+
+    const productSelect = document.getElementById("productSelect");
+    const priceInput = document.getElementById("priceInput");
+
+    function updatePrice() {
+        const selectedOption = productSelect.options[productSelect.selectedIndex];
+        const price = selectedOption.getAttribute("data-price");
+
+        if (price) {
+            priceInput.value = price;
+        }
+    }
+
+    // Initial load
+    updatePrice();
+
+    // On change
+    productSelect.addEventListener("change", updatePrice);
+});
