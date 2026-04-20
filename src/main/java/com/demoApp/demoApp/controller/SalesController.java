@@ -69,14 +69,18 @@ public class SalesController {
     }
 
     @GetMapping("/products/{saleId}")
-    public String showSaleProducts(@PathVariable Integer saleId, Model model){
+    public String showSaleProducts(@PathVariable Integer saleId, Model model, RedirectAttributes attributes){
 
         // Get sale by sale id
         Optional<Sale> optSale = saleService.getSaleById(saleId);
 
-        // *** To be updated and handled
-        if(!optSale.isPresent())
-            return "error";
+        // If the sale do not exist or something goes wrong
+        if(!optSale.isPresent()){
+            Message message = new Message("La venta no existe, error al buscar la venta",false);
+
+            attributes.addFlashAttribute("msg", message);
+            return "redirect:/sales/";
+        }
 
         // Sale object model
         model.addAttribute("sale",optSale.get());
@@ -85,7 +89,9 @@ public class SalesController {
         model.addAttribute("products",productService.getAllProducts());
 
         // To display all the available stock (Not sold yet)
-        model.addAttribute("availableStock", stockService.getAvailableStock());
+        // Stock summary for UI (price + availability)
+        model.addAttribute("stockSummary",
+                stockService.getAvailableStockByProductIdAnQuantityGroup());
 
         // Total
         model.addAttribute("total",saleDetailService.getTotalBySaleId(saleId));

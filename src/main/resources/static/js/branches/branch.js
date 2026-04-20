@@ -70,23 +70,58 @@ function showPurchaseModal(date, id, providerId, userId) {
 
 // Administration/sales/products
 // Dynamic price display
+//document.addEventListener("DOMContentLoaded", function () {
+//
+//    const productSelect = document.getElementById("productSelect");
+//    const priceInput = document.getElementById("priceInput");
+//
+//    function updatePrice() {
+//        const selectedOption = productSelect.options[productSelect.selectedIndex];
+//        const price = selectedOption.getAttribute("data-price");
+//
+//        if (price) {
+//            priceInput.value = price;
+//        }
+//    }
+//
+//    // Initial load
+//    updatePrice();
+//
+//    // On change
+//    productSelect.addEventListener("change", updatePrice);
+//});
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const productSelect = document.getElementById("productSelect");
     const priceInput = document.getElementById("priceInput");
+    const stockLabel = document.getElementById("stockAvailable");
+    const quantityInput = document.getElementById("quantityInput");
 
-    function updatePrice() {
-        const selectedOption = productSelect.options[productSelect.selectedIndex];
-        const price = selectedOption.getAttribute("data-price");
+    function updateUI() {
 
+        const selected = productSelect.options[productSelect.selectedIndex];
+
+        const price = selected.getAttribute("data-price");
+        const stock = selected.getAttribute("data-stock") || 0;
+
+        // Update price
         if (price) {
-            priceInput.value = price;
+            priceInput.value = parseFloat(price).toFixed(2);
+        }
+
+        // Update stock label
+        stockLabel.innerText = stock;
+
+        // Limit quantity
+        quantityInput.max = stock;
+
+        // Reset quantity if invalid
+        if (quantityInput.value > stock) {
+            quantityInput.value = stock;
         }
     }
 
-    // Initial load
-    updatePrice();
-
-    // On change
-    productSelect.addEventListener("change", updatePrice);
+    updateUI();
+    productSelect.addEventListener("change", updateUI);
 });

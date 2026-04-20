@@ -31,4 +31,7 @@ public interface StockRepository extends JpaRepository<Stock,Integer> {
 
     @Query(value = "SELECT * FROM stock WHERE sale_id IS NULL", nativeQuery = true)
     List<Stock> getAllAvailableStock();
+
+    @Query(value = "SELECT product_id, COUNT(*) FROM stock WHERE sale_id IS NULL GROUP BY product_id", nativeQuery = true)
+    List<Object[]> getAvailableStockByProductIdAndQuantity();
 }

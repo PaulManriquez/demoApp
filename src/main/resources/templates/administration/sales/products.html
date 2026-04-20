@@ -68,15 +68,25 @@
                                     <option th:each="product : ${products}"
                                             th:value="${product.id}"
                                             th:text="${product.name}"
-                                            th:attr="data-price=${product.retailPrice}">
+                                            th:attr="
+                                                    data-price=${product.retailPrice},
+                                                    data-stock=${stockSummary[product.id]},
+                                                    disabled=${stockSummary[product.id] == null or stockSummary[product.id] == 0}">
                                     </option>
 
                                 </select>
                             </div>
 
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    Stock disponible:
+                                    <strong id="stockAvailable">0</strong>
+                                </small>
+                            </div>
+
                             <div class="mb-3">
                                 <label>Cantidad:</label>
-                                <input type="number" name="quantity" class="form-control" min="1" required>
+                                <input type="number" name="quantity" id="quantityInput" class="form-control" min="1" required>
                             </div>
 
                             <div class="mb-3">
@@ -86,6 +96,7 @@
                                        name="price"
                                        id="priceInput"
                                        class="form-control"
+                                       readonly
                                        required>
                             </div>
 

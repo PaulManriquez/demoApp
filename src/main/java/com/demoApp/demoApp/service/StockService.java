@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StockService {
@@ -54,6 +56,24 @@ public class StockService {
 
     public List<Stock> getAvailableStock(){
         return stockRepository.getAllAvailableStock();
+    }
+
+    public Map<Integer, Long> getAvailableStockByProductIdAnQuantityGroup(){
+
+        // Query results
+        List<Object[]> results = stockRepository.getAvailableStockByProductIdAndQuantity();
+
+        // Map to save the results
+        Map<Integer, Long> map = new HashMap<>();
+
+        // Process the results
+        for(Object[] row: results){
+            Integer productId = (Integer) row[0]; // Product Id: to know who product is referring to
+            Long count = (Long) row[1]; // Set the numbers of the query
+            map.put(productId, count);
+        }
+
+        return map;
     }
 
 }
