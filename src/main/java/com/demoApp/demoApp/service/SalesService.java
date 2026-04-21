@@ -1,5 +1,6 @@
 package com.demoApp.demoApp.service;
 
+import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.Sale;
 import com.demoApp.demoApp.entity.Stock;
 import com.demoApp.demoApp.repository.SaleRepository;
@@ -36,8 +37,14 @@ public class SalesService {
         return saleRepository.findAll();
     }
 
-    public Optional<Sale> getSaleById(Integer saleId){
-        return saleRepository.findById(saleId);
+    public Sale getSaleById(Integer saleId){
+
+        Optional<Sale> optSale = saleRepository.findById(saleId);
+
+        if(optSale.isPresent())
+            return optSale.get();
+
+        return null;
     }
 
     public Message saveCreateSale(Sale sale){

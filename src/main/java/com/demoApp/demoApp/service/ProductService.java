@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -25,6 +26,15 @@ public class ProductService {
 
     public List<Product> getAllProducts(){
         return productRepository.findAll();
+    }
+
+    public Product getProductById(Integer productId){
+        Optional<Product> optProduct = productRepository.findById(productId);
+
+        if(optProduct.isPresent())
+            return optProduct.get();
+
+        return null;
     }
 
     public Message saveCreateProduct(Product product) {

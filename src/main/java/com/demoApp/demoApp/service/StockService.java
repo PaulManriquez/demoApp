@@ -50,7 +50,7 @@ public class StockService {
         return stockRepository.sumSalePriceByPurchaseId(purchaseId);
     }
 
-    public List<Stock> findAvailableStockProductByProductId(Integer productId, Integer quantity){
+    public List<Stock> getAvailableStockProductByProductId(Integer productId, Integer quantity){
         return stockRepository.findAvailableStockByProductId(productId, quantity);
     }
 

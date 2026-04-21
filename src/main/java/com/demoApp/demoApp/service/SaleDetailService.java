@@ -1,5 +1,6 @@
 package com.demoApp.demoApp.service;
 
+import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.Sale;
 import com.demoApp.demoApp.entity.SaleDetail;
 import com.demoApp.demoApp.model.Message;
@@ -20,25 +21,17 @@ public class SaleDetailService {
         this.saleDetailRepository = saleDetailRepository;
     }
 
-    //Save a saleDetail based on a sale object
-    public Message saveSaleDetail(Sale sale){
+    public Message saveSaleDetail(Sale sale, Product product, Integer quantity, BigDecimal price){
 
-        SaleDetail saleDetail = new SaleDetail();
+        SaleDetail detail = new SaleDetail();
 
-        // Sale
-        saleDetail.setSale(sale);
-        // Product
-        saleDetail.setProduct(saleDetail.getProduct());
-        // Quantity
-        saleDetail.setQuantity(saleDetail.getQuantity());
-        // Price
-        saleDetail.setPrice(BigDecimal.valueOf(saleDetail.getProduct().getRetailPrice()));
-        // Subtotal
-        BigDecimal subtotal = BigDecimal.valueOf(saleDetail.getQuantity() * saleDetail.getProduct().getRetailPrice());
-        saleDetail.setSubtotal(subtotal);
+        detail.setSale(sale);
+        detail.setProduct(product);
+        detail.setQuantity(quantity);
+        detail.setPrice(price);
+        detail.setSubtotal(price.multiply(BigDecimal.valueOf(quantity)));
 
-        // Save sale detail
-        saleDetailRepository.save(saleDetail);
+        saleDetailRepository.save(detail);
 
         return new Message("Venta concretada",true);
     }
@@ -48,16 +41,21 @@ public class SaleDetailService {
     public BigDecimal getTotalBySaleId(Integer saleId){
 
         // Find all the sales_details related to a sale
-        List<SaleDetail> saleDetailsList =  saleDetailRepository.findBySaleId(saleId);
+        List<SaleDetail> saleDetailsList =  saleDetailRepository.getAllSaleDetailsById(saleId);
 
         // Initialize variables
         BigDecimal total = BigDecimal.ZERO;
 
         // Calculate the total based on the subtotals
         for(SaleDetail saleDetail: saleDetailsList){
-            total.add(saleDetail.getSubtotal());
+            total = total.add(saleDetail.getSubtotal());
         }
 
         return total;
     }
+
+    public List<SaleDetail> getAllSaleDetailsById(Integer saleId){
+        return saleDetailRepository.getAllSaleDetailsById(saleId);
+    }
+
 }

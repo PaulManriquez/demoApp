@@ -1,5 +1,6 @@
 package com.demoApp.demoApp.controller;
 
+import com.demoApp.demoApp.entity.Product;
 import com.demoApp.demoApp.entity.Sale;
 import com.demoApp.demoApp.model.Message;
 import com.demoApp.demoApp.service.ClientsService;
@@ -17,8 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.demoApp.demoApp.entity.Stock;
+import com.demoApp.demoApp.entity.SaleDetail;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -72,10 +78,10 @@ public class SalesController {
     public String showSaleProducts(@PathVariable Integer saleId, Model model, RedirectAttributes attributes){
 
         // Get sale by sale id
-        Optional<Sale> optSale = saleService.getSaleById(saleId);
+        Sale sale = saleService.getSaleById(saleId);
 
         // If the sale do not exist or something goes wrong
-        if(!optSale.isPresent()){
+        if(sale == null){
             Message message = new Message("La venta no existe, error al buscar la venta",false);
 
             attributes.addFlashAttribute("msg", message);
@@ -83,7 +89,7 @@ public class SalesController {
         }
 
         // Sale object model
-        model.addAttribute("sale",optSale.get());
+        model.addAttribute("sale",sale);
 
         // All products (for dropdown display-select)
         model.addAttribute("products",productService.getAllProducts());
@@ -93,45 +99,49 @@ public class SalesController {
         model.addAttribute("stockSummary",
                 stockService.getAvailableStockByProductIdAnQuantityGroup());
 
+        // To display the sale details (every sale related to this sale)
+        model.addAttribute("saleDetails",saleDetailService.getAllSaleDetailsById(saleId));
+
         // Total
         model.addAttribute("total",saleDetailService.getTotalBySaleId(saleId));
 
         return "administration/sales/products";
     }
 
-//    @PostMapping("/products/add")
-//    public String addProductToSale(@RequestParam Integer quantity,
-//                                   @RequestParam BigDecimal price,
-//                                   Sale sale,
-//                                   Product product) {
-//
-//        // 1. Get available stock
-//        List<Stock> available = stockService
-//                .findAvailableByProduct(product.getId(), quantity);
-//
-//        if (available.size() < quantity) {
-//            throw new RuntimeException("Not enough stock");
-//        }
-//
-//        // 2. Assign stock to sale
-//        for (Stock s : available) {
-//            s.setSale(sale);
-//            stockService.save(s);
-//        }
-//
-//        // 3. Create sale_detail
-//        SaleDetail detail = new SaleDetail();
-//
-//        detail.setSale(sale);
-//        detail.setProduct(product);
-//        detail.setQuantity(quantity);
-//        detail.setPrice(price);
-//        detail.setSubtotal(price.multiply(BigDecimal.valueOf(quantity)));
-//
-//        saleDetailService.save(detail);
-//
-//        return "redirect:/sales/products/" + sale.getId();
-//    }
+    @PostMapping("/products/add")
+    public String addProductToSale(@RequestParam Integer quantity,
+                                   @RequestParam BigDecimal price,
+                                   @RequestParam("product.id") Integer productId,
+                                   @RequestParam("sale.id") Integer saleId,
+                                   RedirectAttributes attributes) {
+
+        // 1 Retrieve the corresponding product by id
+        Product product = productService.getProductById(productId);
+
+        // 2 Retrieve the corresponding sale
+        Sale sale = saleService.getSaleById(saleId);
+
+        // 3 Get available stock according to the product id
+        List<Stock> available = stockService
+                .getAvailableStockProductByProductId(product.getId(), quantity);
+
+        // 4 Check if a stock is available
+        if (quantity > available.size()) {
+            throw new RuntimeException("Not enough stock");
+        }
+
+        // 5 Assign stock to sale
+        for (Stock s : available) {
+            s.setSale(sale);
+            stockService.saveProductStock(s);
+        }
+
+        // 6 Create sale_detail
+        Message message = saleDetailService.saveSaleDetail(sale,product,quantity,price);
+        attributes.addFlashAttribute("msg", message);
+
+        return "redirect:/sales/products/" + sale.getId();
+    }
 
     @ModelAttribute
     public void setGenerics(Model model) {
