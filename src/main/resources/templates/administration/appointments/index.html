@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Citas</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <style>
+        .calendar-day {
+            min-height: 120px;
+            border: 1px solid rgba(0,0,0,.08);
+        }
+        .calendar-day.outside-month {
+            background: rgba(0,0,0,.02);
+        }
+        .calendar-day-number {
+            font-size: .85rem;
+            font-weight: 600;
+        }
+        .appt {
+            font-size: .8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <a class="btn btn-outline-secondary"
+                           th:href="@{/appointments(year=${yearMonth.minusMonths(1).year},month=${yearMonth.minusMonths(1).monthValue})}">
+                            ‹
+                        </a>
+                        <h4 class="m-0" th:text="${yearMonth.month} + ' ' + ${yearMonth.year}"></h4>
+                        <a class="btn btn-outline-secondary"
+                           th:href="@{/appointments(year=${yearMonth.plusMonths(1).year},month=${yearMonth.plusMonths(1).monthValue})}">
+                            ›
+                        </a>
+                        <a class="btn btn-outline-primary"
+                           th:href="@{/appointments}">
+                            Hoy
+                        </a>
+                    </div>
+
+                    <button class="btn btn-primary" type="button" onclick="openCreateModal(null)">
+                        Crear cita
+                    </button>
+                </div>
+
+                <div class="row g-0">
+                    <div class="col" th:each="dayName : ${#arrays.asList('Lun','Mar','Mie','Jue','Vie','Sab','Dom')}">
+                        <div class="p-2 text-center fw-semibold bg-light border"
+                             th:text="${dayName}"></div>
+                    </div>
+                </div>
+
+                <div th:each="week : ${weeks}" class="row g-0">
+                    <div th:each="day : ${week}" class="col calendar-day p-2"
+                         th:classappend="${day.monthValue != yearMonth.monthValue} ? ' outside-month'">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="calendar-day-number"
+                                 th:classappend="${day.equals(today)} ? ' text-primary'">
+                                <span th:text="${day.dayOfMonth}"></span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary"
+                                    type="button"
+                                    th:attr="data-date=${day}"
+                                    onclick="openCreateModal(this.getAttribute('data-date'))">
+                                +
+                            </button>
+                        </div>
+
+                        <div th:if="${appointmentsByDay[day] != null}">
+                            <div th:each="a : ${appointmentsByDay[day]}" class="appt">
+                                <span class="badge bg-secondary"
+                                      th:text="${#temporals.format(a.startAt,'HH:mm')}"></span>
+                                <span th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ================= CREATE MODAL ================= -->
+<div class="modal fade" id="createAppointmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <form th:action="@{/appointments}" method="post" th:object="${request}">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear cita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Fecha</label>
+                        <div class="col-sm-4">
+                            <input id="appt_date" type="date" class="form-control" th:field="*{date}" required>
+                        </div>
+                        <label class="col-sm-2 col-form-label">Hora</label>
+                        <div class="col-sm-3">
+                            <input id="appt_time" type="time" class="form-control" th:field="*{time}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Duración (min)</label>
+                        <div class="col-sm-3">
+                            <input type="number" min="5" class="form-control" th:field="*{durationMinutes}" required>
+                        </div>
+                        <label class="col-sm-3 col-form-label">Estado</label>
+                        <div class="col-sm-3">
+                            <select class="form-select" th:field="*{status}">
+                                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Cliente</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" th:field="*{clientId}" required>
+                                <option value="" disabled selected>Selecciona un cliente</option>
+                                <option th:each="c : ${clients}" th:value="${c.id}"
+                                        th:text="${c.firstName} + ' ' + ${c.lastName}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Técnico</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" th:field="*{technicianUserId}" required>
+                                <option value="" disabled selected>Selecciona un técnico</option>
+                                <option th:each="u : ${technicians}" th:value="${u.id}"
+                                        th:text="${u.name} + ' ' + ${u.lastName}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Servicios</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" multiple size="6" th:field="*{serviceIds}" required>
+                                <option th:each="s : ${services}" th:value="${s.id}"
+                                        th:text="${s.name} + ' (' + ${s.category} + ')'"></option>
+                            </select>
+                            <div class="form-text">Puedes seleccionar múltiples servicios (combo).</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Notas</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="2" th:field="*{notes}"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function openCreateModal(dateValue) {
+        if (dateValue) {
+            document.getElementById('appt_date').value = dateValue;
+        }
+        const modal = new bootstrap.Modal(document.getElementById('createAppointmentModal'));
+        modal.show();
+    }
+</script>
+
+</body>
+</html>

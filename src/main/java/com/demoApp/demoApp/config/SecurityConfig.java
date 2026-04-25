@@ -31,17 +31,18 @@ public class SecurityConfig {
 
         // Roles must be updated, for now we will let only admin
         http.authorizeHttpRequests( auth-> auth
-                .requestMatchers("/","/home","/login","/css/**","bootstrap/**").permitAll()
+                .requestMatchers("/","/home","/login","/css/**","/bootstrap/**","/images/**","/js/**","/favicon.ico").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/branches/**").hasRole("ADMIN")
-                        .requestMatchers("/products/**").hasRole("ADMIN")
-                        .requestMatchers("/purchases/**").hasRole("ADMIN")
-                        .requestMatchers("/sales/**").hasRole("ADMIN")
+                        .requestMatchers("/services/**").hasRole("ADMIN")
+                        .requestMatchers("/appointments/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/roles/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
                 .formLogin(form->form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home",true)/*Default success url redirect*/
+                        .defaultSuccessUrl("/admin",true)/*Default success url redirect*/
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception

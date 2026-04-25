@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Usuarios</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <div class="row mb-4">
+                    <button class="btn btn-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newUserForm">
+                        Nuevo Usuario
+                    </button>
+
+                    <div class="collapse mt-3" id="newUserForm">
+                        <div class="card card-body">
+                            <form th:action="@{/users}" method="post" th:object="${userForm}">
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Nombre</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" th:field="*{name}" required>
+                                    </div>
+                                    <label class="col-sm-2 col-form-label">Apellido</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" th:field="*{lastName}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Username</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" th:field="*{username}" required>
+                                    </div>
+                                    <label class="col-sm-2 col-form-label">Email</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="email" th:field="*{email}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Teléfono</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" th:field="*{phone}">
+                                    </div>
+                                    <label class="col-sm-2 col-form-label">Contraseña</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="password" th:field="*{password}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Status</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-select" th:field="*{status}">
+                                            <option th:value="true">Activo</option>
+                                            <option th:value="false">Inactivo</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-2 col-form-label">Roles</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-select" multiple size="4" th:field="*{roleIds}">
+                                            <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary" style="float:right">
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Roles</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="u : ${users}">
+                                    <td th:text="${u.id}"></td>
+                                    <td th:text="${u.name} + ' ' + ${u.lastName}"></td>
+                                    <td th:text="${u.username}"></td>
+                                    <td th:text="${u.email}"></td>
+                                    <td>
+                                        <span th:if="${u.status}" class="badge bg-success">Activo</span>
+                                        <span th:if="${!u.status}" class="badge bg-secondary">Inactivo</span>
+                                    </td>
+                                    <td>
+                                        <span th:each="r : ${u.roles}" class="badge bg-dark me-1" th:text="${r.name}"></span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"
+                                                th:data-id="${u.id}"
+                                                th:data-name="${u.name}"
+                                                th:data-lastName="${u.lastName}"
+                                                th:data-username="${u.username}"
+                                                th:data-email="${u.email}"
+                                                th:data-phone="${u.phone}"
+                                                th:data-status="${u.status}"
+                                                th:data-roleIds="${#strings.listJoin(u.roles.![id], ',')}"
+                                                onclick="showEditUserModal(this)">
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-text">En edición, la contraseña es opcional (si la dejas vacía no cambia).</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <form th:action="@{/users/update}" method="post">
+                <input type="hidden" name="_method" value="put"/>
+
+                <input type="hidden" id="edit_id" name="id"/>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Nombre</label>
+                        <div class="col-sm-4">
+                            <input id="edit_name" class="form-control" type="text" name="name" required>
+                        </div>
+                        <label class="col-sm-2 col-form-label">Apellido</label>
+                        <div class="col-sm-4">
+                            <input id="edit_lastName" class="form-control" type="text" name="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Username</label>
+                        <div class="col-sm-4">
+                            <input id="edit_username" class="form-control" type="text" name="username" required>
+                        </div>
+                        <label class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-4">
+                            <input id="edit_email" class="form-control" type="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Teléfono</label>
+                        <div class="col-sm-4">
+                            <input id="edit_phone" class="form-control" type="text" name="phone">
+                        </div>
+                        <label class="col-sm-2 col-form-label">Contraseña</label>
+                        <div class="col-sm-4">
+                            <input class="form-control" type="password" name="password" placeholder="(opcional)">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-4">
+                            <select id="edit_status" class="form-select" name="status">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-2 col-form-label">Roles</label>
+                        <div class="col-sm-4">
+                            <select id="edit_roleIds" class="form-select" multiple size="5" name="roleIds">
+                                <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function showEditUserModal(button) {
+        document.getElementById('edit_id').value = button.getAttribute('data-id');
+        document.getElementById('edit_name').value = button.getAttribute('data-name');
+        document.getElementById('edit_lastName').value = button.getAttribute('data-lastName');
+        document.getElementById('edit_username').value = button.getAttribute('data-username');
+        document.getElementById('edit_email').value = button.getAttribute('data-email');
+        document.getElementById('edit_phone').value = button.getAttribute('data-phone') || '';
+        document.getElementById('edit_status').value = button.getAttribute('data-status');
+
+        const roleIdsCsv = button.getAttribute('data-roleIds') || '';
+        const roleIds = roleIdsCsv.split(',').filter(Boolean);
+        const select = document.getElementById('edit_roleIds');
+        for (const option of select.options) {
+            option.selected = roleIds.includes(option.value);
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        modal.show();
+    }
+</script>
+
+</body>
+</html>

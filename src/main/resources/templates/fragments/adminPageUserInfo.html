@@ -7,6 +7,15 @@
 
   <nav class="navbar navbar-expand navbar-light bg-white border-bottom px-3 py-2">
 
+    <!-- Mobile sidebar toggle -->
+    <button class="btn btn-outline-secondary d-md-none me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#adminSidebarOffcanvas"
+            aria-controls="adminSidebarOffcanvas">
+      Menu
+    </button>
+
     <!-- Right Side -->
     <div class="ms-auto d-flex align-items-center">
 
@@ -30,12 +39,6 @@
               ADMIN
           </span>
 
-          <!-- Profile Image -->
-          <img th:src="@{/img/undraw_profile_2.svg}"
-               alt="User profile"
-               class="rounded-circle"
-               width="32"
-               height="32">
         </a>
 
         <!-- Dropdown Menu -->
@@ -43,18 +46,8 @@
             aria-labelledby="userDropdown">
 
           <li>
-            <a class="dropdown-item" th:href="@{/profile}">
-              <i class="fas fa-user me-2"></i>
-              Profile
-            </a>
-          </li>
-
-          <li><hr class="dropdown-divider"></li>
-
-          <li>
             <form th:action="@{/logout}" method="post">
               <button type="submit" class="dropdown-item">
-                <i class="fas fa-sign-out-alt me-2"></i>
                 Logout
               </button>
             </form>

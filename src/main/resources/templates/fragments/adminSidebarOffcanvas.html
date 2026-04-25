@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar">
+    <div class="offcanvas offcanvas-start text-bg-dark d-md-none"
+         tabindex="-1"
+         id="adminSidebarOffcanvas"
+         aria-labelledby="adminSidebarOffcanvasLabel">
+        <div class="offcanvas-body p-0">
+            <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+

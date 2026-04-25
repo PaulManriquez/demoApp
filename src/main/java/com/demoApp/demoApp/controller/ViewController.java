@@ -12,10 +12,12 @@ public class ViewController {
     }
 
     @GetMapping("/")
-    public String root() {return "redirect:/home";}
+    public String root() {
+        return "redirect:/admin";
+    }
 
     @GetMapping("/home")
     public String homePage(){
-        return "home";
+        return "redirect:/admin";
     }
 }

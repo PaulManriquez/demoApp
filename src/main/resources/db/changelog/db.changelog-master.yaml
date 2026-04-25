@@ -1,88 +1,16 @@
 databaseChangeLog:
   - changeSet:
-      id: 001
+      id: 001-core
       author: paul
       changes:
         - sqlFile:
-            path: changes/001-initial-schema.sql
+            path: changes/001-core-schema.sql
             relativeToChangeLogFile: true
 
   - changeSet:
-      id: 002
+      id: 002-core
       author: paul
       changes:
         - sqlFile:
-            path: changes/002-initial-roles-values-set.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 003
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/003-initial-user-values-set.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 004
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/004-initial-users_roles-values-set.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 005
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/005-initial-branch_table.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 006
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/006-initial-product-table.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 007
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/007-initial-providers.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 008
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/008-initial-clients.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 009
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/009-initial-purchases.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 010
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/010-initial-sales.sql
-            relativeToChangeLogFile: true
-
-  - changeSet:
-      id: 011
-      author: paul
-      changes:
-        - sqlFile:
-            path: changes/011-initial-stock.sql
+            path: changes/002-core-seed.sql
             relativeToChangeLogFile: true

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Clientes</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <div class="row mb-4">
+                    <button class="btn btn-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newClientForm">
+                        Nuevo Cliente
+                    </button>
+
+                    <div class="collapse mt-3" id="newClientForm">
+                        <div class="card card-body">
+                            <form th:action="@{/clients}" method="post" th:object="${client}">
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="firstName">Nombre:</label>
+                                    <div class="col-sm-6">
+                                        <input id="firstName" type="text" class="form-control" th:field="*{firstName}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="lastName">Apellido:</label>
+                                    <div class="col-sm-6">
+                                        <input id="lastName" type="text" class="form-control" th:field="*{lastName}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="phone">Teléfono:</label>
+                                    <div class="col-sm-4">
+                                        <input id="phone" type="text" class="form-control" th:field="*{phone}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="address">Dirección:</label>
+                                    <div class="col-sm-8">
+                                        <input id="address" type="text" class="form-control" th:field="*{address}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>
+                                    <div class="col-sm-8">
+                                        <input id="mapsLink" type="text" class="form-control" th:field="*{mapsLink}" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary" style="float:right">
+                                        Guardar
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Clientes</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Activo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="c : ${clients}">
+                                    <td th:text="${c.id}"></td>
+                                    <td th:text="${c.firstName} + ' ' + ${c.lastName}"></td>
+                                    <td th:text="${c.phone}"></td>
+                                    <td>
+                                        <span th:if="${c.active}" class="badge bg-success">Sí</span>
+                                        <span th:if="${!c.active}" class="badge bg-secondary">No</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"
+                                                th:data-id="${c.id}"
+                                                th:data-firstName="${c.firstName}"
+                                                th:data-lastName="${c.lastName}"
+                                                th:data-phone="${c.phone}"
+                                                th:data-address="${c.address}"
+                                                th:data-mapsLink="${c.mapsLink}"
+                                                onclick="showEditClientModal(this)">
+                                            Edit
+                                        </button>
+
+                                        <a class="btn btn-outline-secondary btn-sm"
+                                           th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
+                                            <span th:text="${c.active} ? 'Desactivar' : 'Activar'"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal fade" id="editClientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form th:action="@{/clients/update}" method="post">
+
+                <input type="hidden" name="_method" value="put"/>
+                <input type="hidden" id="edit_id" name="id"/>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_firstName">Nombre:</label>
+                        <div class="col-sm-9">
+                            <input id="edit_firstName" name="firstName" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_lastName">Apellido:</label>
+                        <div class="col-sm-9">
+                            <input id="edit_lastName" name="lastName" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_phone">Teléfono:</label>
+                        <div class="col-sm-6">
+                            <input id="edit_phone" name="phone" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_address">Dirección:</label>
+                        <div class="col-sm-9">
+                            <input id="edit_address" name="address" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_mapsLink">Maps Link:</label>
+                        <div class="col-sm-9">
+                            <input id="edit_mapsLink" name="mapsLink" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function showEditClientModal(button) {
+        document.getElementById('edit_id').value = button.getAttribute('data-id');
+        document.getElementById('edit_firstName').value = button.getAttribute('data-firstName');
+        document.getElementById('edit_lastName').value = button.getAttribute('data-lastName');
+        document.getElementById('edit_phone').value = button.getAttribute('data-phone');
+        document.getElementById('edit_address').value = button.getAttribute('data-address');
+        document.getElementById('edit_mapsLink').value = button.getAttribute('data-mapsLink');
+        const modal = new bootstrap.Modal(document.getElementById('editClientModal'));
+        modal.show();
+    }
+</script>
+
+</body>
+</html>

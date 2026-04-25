@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Servicios</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <div class="row mb-4">
+                    <button class="btn btn-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newServiceForm">
+                        Nuevo Servicio
+                    </button>
+
+                    <div class="collapse mt-3" id="newServiceForm">
+                        <div class="card card-body">
+                            <form th:action="@{/services}" method="post" th:object="${service}">
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="name">Nombre:</label>
+                                    <div class="col-sm-6">
+                                        <input id="name" type="text" class="form-control" th:field="*{name}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="category">Giro:</label>
+                                    <div class="col-sm-6">
+                                        <select id="category" class="form-select" th:field="*{category}" required>
+                                            <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="durationMinutes">Duración (min):</label>
+                                    <div class="col-sm-3">
+                                        <input id="durationMinutes" type="number" min="5" class="form-control" th:field="*{durationMinutes}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="price">Precio:</label>
+                                    <div class="col-sm-3">
+                                        <input id="price" type="number" step="0.01" min="0" class="form-control" th:field="*{price}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="description">Descripción:</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="description" class="form-control" rows="2" th:field="*{description}"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-sm-8 offset-sm-2">
+                                        <div class="form-check">
+                                            <input id="visible" class="form-check-input" type="checkbox" th:field="*{visible}">
+                                            <label class="form-check-label" for="visible">Visible en selector de citas</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary" style="float:right">
+                                        Guardar
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Servicios</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Giro</th>
+                                    <th>Duración</th>
+                                    <th>Precio</th>
+                                    <th>Visible</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="s : ${services}">
+                                    <td th:text="${s.id}"></td>
+                                    <td th:text="${s.name}"></td>
+                                    <td th:text="${s.category}"></td>
+                                    <td th:text="${s.durationMinutes} + ' min'"></td>
+                                    <td th:text="${s.price}"></td>
+                                    <td>
+                                        <span th:if="${s.visible}" class="badge bg-success">Sí</span>
+                                        <span th:if="${!s.visible}" class="badge bg-secondary">No</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"
+                                                th:data-id="${s.id}"
+                                                th:data-name="${s.name}"
+                                                th:data-category="${s.category}"
+                                                th:data-durationMinutes="${s.durationMinutes}"
+                                                th:data-price="${s.price}"
+                                                th:data-description="${s.description}"
+                                                th:data-visible="${s.visible}"
+                                                onclick="showEditServiceModal(this)">
+                                            Edit
+                                        </button>
+
+                                        <a class="btn btn-outline-secondary btn-sm"
+                                           th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
+                                            <span th:text="${s.visible} ? 'Ocultar' : 'Mostrar'"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form th:action="@{/services/update}" method="post">
+
+                <input type="hidden" name="_method" value="put"/>
+                <input type="hidden" id="edit_id" name="id"/>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_name">Nombre:</label>
+                        <div class="col-sm-9">
+                            <input id="edit_name" name="name" type="text" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_category">Giro:</label>
+                        <div class="col-sm-9">
+                            <select id="edit_category" name="category" class="form-select" required>
+                                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_duration">Duración (min):</label>
+                        <div class="col-sm-4">
+                            <input id="edit_duration" name="durationMinutes" type="number" min="5" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_price">Precio:</label>
+                        <div class="col-sm-4">
+                            <input id="edit_price" name="price" type="number" step="0.01" min="0" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="edit_description">Descripción:</label>
+                        <div class="col-sm-9">
+                            <textarea id="edit_description" name="description" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-9 offset-sm-3">
+                            <div class="form-check">
+                                <input id="edit_visible" name="visible" class="form-check-input" type="checkbox" value="true">
+                                <label class="form-check-label" for="edit_visible">Visible en selector de citas</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function showEditServiceModal(button) {
+        document.getElementById('edit_id').value = button.getAttribute('data-id');
+        document.getElementById('edit_name').value = button.getAttribute('data-name');
+        document.getElementById('edit_category').value = button.getAttribute('data-category');
+        document.getElementById('edit_duration').value = button.getAttribute('data-durationMinutes');
+        document.getElementById('edit_price').value = button.getAttribute('data-price');
+        document.getElementById('edit_description').value = button.getAttribute('data-description') || '';
+
+        const visible = button.getAttribute('data-visible') === 'true';
+        document.getElementById('edit_visible').checked = visible;
+
+        const modal = new bootstrap.Modal(document.getElementById('editServiceModal'));
+        modal.show();
+    }
+</script>
+
+</body>
+</html>

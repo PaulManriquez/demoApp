@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Roles</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
+
+                <div class="row mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/roles}" method="post" th:object="${role}" class="row g-2 align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="name">Nombre del rol</label>
+                                    <input id="name" class="form-control" type="text" th:field="*{name}" placeholder="ADMIN, TECHNICIAN..." required>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Crear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Roles</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="r : ${roles}">
+                                    <td th:text="${r.id}"></td>
+                                    <td th:text="${r.name}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-text">Tip: crea el rol TECHNICIAN para poder asignar técnicos y filtrarlos en citas.</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

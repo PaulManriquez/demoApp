@@ -7,36 +7,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Muebles Porto - Administración</title>
 
-    <link rel="icon" th:href="@{/favicon.ico}">
-
     <!-- Bootstrap 5 -->
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-
-    <!-- FontAwesome -->
-    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
 
         <!-- Sidebar Fragment -->
-        <aside class="col-md-3 col-lg-2 p-0 bg-dark min-vh-100">
-            <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
 
             <!-- Topbar Fragment -->
             <div th:insert="~{fragments/adminPageUserInfo :: userInfo}"></div>
 
             <!-- Page Content -->
             <div class="container-fluid py-4">
-                <h1 class="h3 mb-4">Admin Dashboard</h1>
-                <p>Contenido principal aquí.</p>
+                <h1 class="h4 mb-2">Dashboard</h1>
+                <p class="text-muted mb-0">Servicios, citas, clientes, usuarios y roles.</p>
             </div>
 
         </main>

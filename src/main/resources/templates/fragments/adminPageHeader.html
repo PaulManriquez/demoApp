@@ -4,13 +4,19 @@
 
 <div th:fragment="header">
 
-  <div class="d-flex flex-column p-3 text-white bg-dark h-100">
+  <div class="d-flex flex-column p-3 text-white bg-dark h-100 sidebar"
+       style="background: linear-gradient(180deg, #111827 0%, #0b1220 100%); min-height: 100vh;">
 
     <!-- Brand -->
     <a th:href="@{/admin}"
-       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <i class="fas fa-store me-2"></i>
-      <span class="fs-4">Muebles Porto</span>
+       class="d-flex align-items-center justify-content-between mb-3 mb-md-0 text-white text-decoration-none">
+      <span class="fs-5 fw-semibold">Agenda / Admin</span>
+      <button type="button"
+              class="btn btn-sm btn-outline-light d-md-none"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close">
+        X
+      </button>
     </a>
 
     <hr class="text-secondary">
@@ -20,40 +26,36 @@
       <!-- Dashboard -->
       <li class="nav-item">
         <a th:href="@{/admin}"
-           class="nav-link text-white"
+           class="nav-link text-white sidebar-link"
            th:classappend="${position == 'dashboard'} ? ' active bg-primary'">
-          <i class="fas fa-tachometer-alt me-2"></i>
           Dashboard
         </a>
       </li>
 
-      <!-- Productos -->
+      <!-- Servicios -->
       <li>
-        <a th:href="@{/products}"
-           class="nav-link text-white"
-           th:classappend="${position == 'products'} ? ' active bg-primary'">
-          <i class="fas fa-box me-2"></i>
-          Productos
+        <a th:href="@{/services}"
+           class="nav-link text-white sidebar-link"
+           th:classappend="${position == 'services'} ? ' active bg-primary'">
+          Servicios
         </a>
       </li>
 
-      <!-- Compras -->
+      <!-- Citas -->
       <li>
-        <a th:href="@{/purchases}"
-           class="nav-link text-white"
-           th:classappend="${position == 'purchase'} ? ' active bg-primary'">
-          <i class="fas fa-shopping-cart me-2"></i>
-          Compras
+        <a th:href="@{/appointments}"
+           class="nav-link text-white sidebar-link"
+           th:classappend="${position == 'appointments'} ? ' active bg-primary'">
+          Citas
         </a>
       </li>
 
-      <!-- Sucursales -->
+      <!-- Clientes -->
       <li>
-        <a th:href="@{/branches}"
-           class="nav-link text-white"
-           th:classappend="${position == 'branches'} ? ' active bg-primary'">
-          <i class="fas fa-store-alt me-2"></i>
-          Sucursales
+        <a th:href="@{/clients}"
+           class="nav-link text-white sidebar-link"
+           th:classappend="${position == 'clients'} ? ' active bg-primary'">
+          Clientes
         </a>
       </li>
 
@@ -68,10 +70,18 @@
       <!-- Usuarios -->
       <li>
         <a th:href="@{/users}"
-           class="nav-link text-white"
+           class="nav-link text-white sidebar-link"
            th:classappend="${position == 'users'} ? ' active bg-primary'">
-          <i class="fas fa-users me-2"></i>
           Usuarios
+        </a>
+      </li>
+
+      <!-- Roles -->
+      <li>
+        <a th:href="@{/roles}"
+           class="nav-link text-white sidebar-link"
+           th:classappend="${position == 'roles'} ? ' active bg-primary'">
+          Roles
         </a>
       </li>
 
