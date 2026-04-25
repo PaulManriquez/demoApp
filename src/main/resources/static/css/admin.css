@@ -1,0 +1,62 @@
+:root {
+    --admin-radius: 14px;
+}
+
+.admin-page main {
+    background: #f6f7fb;
+    min-height: 100vh;
+}
+
+.admin-page .container-fluid.py-4 {
+    max-width: 1200px;
+}
+
+.admin-page .card {
+    border: 0;
+    border-radius: var(--admin-radius);
+}
+
+.admin-page .card-header {
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.admin-page .table {
+    background: #fff;
+}
+
+.admin-page .table th,
+.admin-page .table td {
+    padding: .5rem .6rem;
+    vertical-align: middle;
+}
+
+.admin-page .table thead th {
+    white-space: nowrap;
+}
+
+.admin-page .btn {
+    border-radius: 10px;
+}
+
+.admin-page .badge {
+    font-weight: 600;
+}
+
+.admin-page .mobile-cards .card-title {
+    font-size: 1rem;
+}
+
+.admin-page .mobile-cards .meta {
+    font-size: .9rem;
+    color: rgba(255, 255, 255, .8);
+}
+
+.admin-page .mobile-cards .card-body {
+    padding: 1rem;
+}
+
+.admin-page .mobile-cards .actions .btn {
+    padding: .35rem .6rem;
+}
+

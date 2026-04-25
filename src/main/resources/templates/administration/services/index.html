@@ -10,9 +10,10 @@
     <title>Muebles Porto - Servicios</title>
 
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
 </head>
 
-<body>
+<body class="admin-page">
 
 <div class="container-fluid px-0">
     <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
@@ -101,14 +102,61 @@
                     </div>
                 </div>
 
-                <div class="card shadow mb-4">
+                <!-- Mobile cards -->
+                <div class="d-md-none mobile-cards">
+                    <div class="mb-3" th:each="s : ${services}">
+                        <div class="card shadow-sm text-white"
+                             style="background: linear-gradient(135deg,#111827 0%,#1f2937 100%);">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="card-title mb-1" th:text="${s.name}"></div>
+                                        <div class="meta">
+                                            <span th:text="${s.category}"></span>
+                                            <span> • </span>
+                                            <span th:text="${s.durationMinutes} + ' min'"></span>
+                                            <span> • </span>
+                                            <span th:text="${s.price}"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span th:if="${s.visible}" class="badge bg-success">Visible</span>
+                                        <span th:if="${!s.visible}" class="badge bg-secondary">Oculto</span>
+                                    </div>
+                                </div>
+
+                                <div class="actions mt-3 d-flex gap-2">
+                                    <button class="btn btn-light btn-sm"
+                                            th:data-id="${s.id}"
+                                            th:data-name="${s.name}"
+                                            th:data-category="${s.category}"
+                                            th:data-durationMinutes="${s.durationMinutes}"
+                                            th:data-price="${s.price}"
+                                            th:data-description="${s.description}"
+                                            th:data-visible="${s.visible}"
+                                            onclick="showEditServiceModal(this)">
+                                        Editar
+                                    </button>
+
+                                    <a class="btn btn-outline-light btn-sm"
+                                       th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
+                                        <span th:text="${s.visible} ? 'Ocultar' : 'Mostrar'"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop table -->
+                <div class="card shadow mb-4 d-none d-md-block">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Servicios</h6>
                     </div>
                     <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle">
+                            <table class="table table-bordered table-sm align-middle">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>

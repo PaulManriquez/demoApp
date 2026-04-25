@@ -10,9 +10,10 @@
     <title>Muebles Porto - Clientes</title>
 
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
 </head>
 
-<body>
+<body class="admin-page">
 
 <div class="container-fluid px-0">
     <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
@@ -90,14 +91,56 @@
                     </div>
                 </div>
 
-                <div class="card shadow mb-4">
+                <!-- Mobile cards -->
+                <div class="d-md-none mobile-cards">
+                    <div class="mb-3" th:each="c : ${clients}">
+                        <div class="card shadow-sm text-white"
+                             style="background: linear-gradient(135deg,#111827 0%,#1f2937 100%);">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="card-title mb-1" th:text="${c.firstName} + ' ' + ${c.lastName}"></div>
+                                        <div class="meta">
+                                            <span th:text="${c.phone}"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span th:if="${c.active}" class="badge bg-success">Activo</span>
+                                        <span th:if="${!c.active}" class="badge bg-secondary">Inactivo</span>
+                                    </div>
+                                </div>
+
+                                <div class="actions mt-3 d-flex gap-2">
+                                    <button class="btn btn-light btn-sm"
+                                            th:data-id="${c.id}"
+                                            th:data-firstName="${c.firstName}"
+                                            th:data-lastName="${c.lastName}"
+                                            th:data-phone="${c.phone}"
+                                            th:data-address="${c.address}"
+                                            th:data-mapsLink="${c.mapsLink}"
+                                            onclick="showEditClientModal(this)">
+                                        Editar
+                                    </button>
+
+                                    <a class="btn btn-outline-light btn-sm"
+                                       th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
+                                        <span th:text="${c.active} ? 'Desactivar' : 'Activar'"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop table -->
+                <div class="card shadow mb-4 d-none d-md-block">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Clientes</h6>
                     </div>
                     <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle">
+                            <table class="table table-bordered table-sm align-middle">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
