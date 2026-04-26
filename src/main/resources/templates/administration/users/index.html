@@ -107,8 +107,7 @@
                 <!-- Mobile cards -->
                 <div class="d-md-none mobile-cards">
                     <div class="mb-3" th:each="u : ${users}">
-                        <div class="card shadow-sm text-white"
-                             style="background: linear-gradient(135deg,#111827 0%,#1f2937 100%);">
+                        <div class="card shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
@@ -119,8 +118,8 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <span th:if="${u.status}" class="badge bg-success">Activo</span>
-                                        <span th:if="${!u.status}" class="badge bg-secondary">Inactivo</span>
+                                        <span th:if="${u.status}" class="badge text-bg-success">Activo</span>
+                                        <span th:if="${!u.status}" class="badge text-bg-secondary">Inactivo</span>
                                     </div>
                                 </div>
 

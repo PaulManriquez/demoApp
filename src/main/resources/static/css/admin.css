@@ -1,10 +1,19 @@
 :root {
     --admin-radius: 14px;
+    --admin-bg: #f3f7ff;
+    --admin-surface: #ffffff;
+    --admin-border: rgba(15, 23, 42, .10);
+    --admin-text: #0f172a;
+    --admin-muted: rgba(15, 23, 42, .65);
+    --admin-accent: #3b82f6;
+    --admin-accent-soft: rgba(59, 130, 246, .12);
+    --admin-sidebar-bg: linear-gradient(180deg, #eaf2ff 0%, #ffffff 100%);
 }
 
 .admin-page main {
-    background: #f6f7fb;
+    background: var(--admin-bg);
     min-height: 100vh;
+    color: var(--admin-text);
 }
 
 .admin-page .container-fluid.py-4 {
@@ -14,15 +23,16 @@
 .admin-page .card {
     border: 0;
     border-radius: var(--admin-radius);
+    background: var(--admin-surface);
 }
 
 .admin-page .card-header {
-    background: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    background: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
 }
 
 .admin-page .table {
-    background: #fff;
+    background: var(--admin-surface);
 }
 
 .admin-page .table th,
@@ -49,7 +59,7 @@
 
 .admin-page .mobile-cards .meta {
     font-size: .9rem;
-    color: rgba(255, 255, 255, .8);
+    color: var(--admin-muted);
 }
 
 .admin-page .mobile-cards .card-body {
@@ -60,3 +70,67 @@
     padding: .35rem .6rem;
 }
 
+/* Sidebar */
+.admin-sidebar {
+    background: var(--admin-sidebar-bg);
+    border-right: 1px solid var(--admin-border);
+    min-height: 100vh;
+}
+
+.admin-sidebar .brand {
+    color: var(--admin-text);
+    font-weight: 700;
+}
+
+.admin-sidebar .nav-link {
+    color: var(--admin-text) !important;
+    border-radius: 12px;
+    padding: .55rem .75rem;
+}
+
+.admin-sidebar .nav-link:hover {
+    background: var(--admin-accent-soft);
+}
+
+.admin-sidebar .nav-link.active {
+    background: var(--admin-accent) !important;
+    color: #fff !important;
+}
+
+.admin-sidebar hr {
+    border-color: var(--admin-border);
+    opacity: 1;
+}
+
+/* Mobile cards */
+.admin-page .mobile-cards .card {
+    border: 1px solid var(--admin-border);
+}
+
+.admin-page .mobile-cards .card::before {
+    content: "";
+    display: block;
+    height: 4px;
+    background: var(--admin-accent);
+    border-top-left-radius: var(--admin-radius);
+    border-top-right-radius: var(--admin-radius);
+}
+
+.admin-page .mobile-cards .actions .btn.btn-light {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.admin-page .mobile-cards .actions .btn.btn-light:hover {
+    filter: brightness(.95);
+}
+
+.admin-page .mobile-cards .actions .btn.btn-outline-light {
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.admin-page .mobile-cards .actions .btn.btn-outline-light:hover {
+    background: var(--admin-accent-soft);
+}
