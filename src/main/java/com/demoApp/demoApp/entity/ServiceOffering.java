@@ -30,7 +30,6 @@ public class ServiceOffering {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @NotBlank(message = "El nombre del servicio es obligatorio")
@@ -66,4 +65,3 @@ public class ServiceOffering {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
-

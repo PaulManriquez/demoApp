@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="row g-0">
-                    <div class="col" th:each="dayName : ${#arrays.asList('Lun','Mar','Mie','Jue','Vie','Sab','Dom')}">
+                    <div class="col" th:each="dayName : ${dayNames}">
                         <div class="p-2 text-center fw-semibold bg-light border"
                              th:text="${dayName}"></div>
                     </div>

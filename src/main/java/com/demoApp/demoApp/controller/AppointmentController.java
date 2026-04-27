@@ -25,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -151,6 +150,7 @@ public class AppointmentController {
         model.addAttribute("weeks", weeks);
         model.addAttribute("appointmentsByDay", byDay);
         model.addAttribute("today", today);
+        model.addAttribute("dayNames", List.of("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"));
 
         model.addAttribute("request", request);
         model.addAttribute("clients", clientsRepository.findAll());
