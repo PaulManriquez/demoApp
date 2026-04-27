@@ -68,6 +68,10 @@
                            th:href="@{/appointments}">
                             Hoy
                         </a>
+                        <a class="btn btn-outline-primary d-none d-sm-inline"
+                           th:href="@{/appointments/agenda(date=${today})}">
+                            Ver agenda hoy
+                        </a>
                     </div>
 
                     <button class="btn btn-primary" type="button" onclick="openCreateModal(null)">

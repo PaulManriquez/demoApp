@@ -37,6 +37,10 @@ public class AppointmentServiceManager {
         return appointmentRepository.findForCalendarRange(startInclusive, endExclusive);
     }
 
+    public List<Appointment> getAgendaRange(LocalDateTime startInclusive, LocalDateTime endExclusive) {
+        return appointmentRepository.findForAgendaRangeWithDetails(startInclusive, endExclusive);
+    }
+
     @Transactional
     public Message createAppointment(Appointment appointment, List<Integer> serviceIds) {
         if (appointment.getId() != null) {
@@ -79,4 +83,3 @@ public class AppointmentServiceManager {
         return new Message("Cita creada con exito", true);
     }
 }
-

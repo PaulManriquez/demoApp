@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Muebles Porto - Agenda</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+</head>
+
+<body class="admin-page">
+
+<div class="container-fluid px-0">
+    <div th:insert="~{fragments/adminSidebarOffcanvas :: sidebar}"></div>
+    <div class="row g-0">
+
+        <aside class="col-md-3 col-lg-2 p-0 min-vh-100 d-none d-md-block">
+            <div class="position-sticky top-0" style="height: 100vh;">
+                <div th:insert="~{fragments/adminPageHeader :: header}"></div>
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-4 py-3">
+
+            <div th:replace="~{fragments/adminPageUserInfo :: userInfo}"></div>
+
+            <div class="container-fluid py-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h1 class="h4 mb-1">Agenda del día</h1>
+                        <div class="text-muted" th:text="${#temporals.format(date,'yyyy-MM-dd')}"></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-primary"
+                           th:href="@{/appointments(year=${date.year},month=${date.monthValue})}">
+                            Volver al calendario
+                        </a>
+                    </div>
+                </div>
+
+                <form class="row g-2 align-items-end mb-4" th:action="@{/appointments/agenda}" method="get">
+                    <div class="col-sm-4 col-md-3">
+                        <label class="form-label">Fecha</label>
+                        <input class="form-control" type="date" name="date" th:value="${date}">
+                    </div>
+                    <div class="col-sm-3 col-md-2">
+                        <button class="btn btn-primary w-100" type="submit">Ver</button>
+                    </div>
+                </form>
+
+                <!-- Mobile cards -->
+                <div class="d-md-none mobile-cards">
+                    <div class="mb-3" th:each="a : ${appointments}">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="card-title mb-1">
+                                            <span class="badge text-bg-primary me-2"
+                                                  th:text="${#temporals.format(a.startAt,'HH:mm')}"></span>
+                                            <span th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></span>
+                                        </div>
+                                        <div class="meta">
+                                            <div>
+                                                Técnico:
+                                                <span th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></span>
+                                            </div>
+                                            <div>
+                                                Servicios:
+                                                <span th:if="${a.services != null and !a.services.isEmpty()}"
+                                                      th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                                <span th:if="${a.services == null or a.services.isEmpty()}">—</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${appointments == null or appointments.isEmpty()}" class="text-muted">
+                        No hay citas para este día.
+                    </div>
+                </div>
+
+                <!-- Desktop table -->
+                <div class="card shadow mb-4 d-none d-md-block">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Citas</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Técnico</th>
+                                    <th>Servicios</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="a : ${appointments}">
+                                    <td th:text="${#temporals.format(a.startAt,'HH:mm')}"></td>
+                                    <td th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></td>
+                                    <td th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></td>
+                                    <td>
+                                        <span th:if="${a.services != null and !a.services.isEmpty()}"
+                                              th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                        <span th:if="${a.services == null or a.services.isEmpty()}">—</span>
+                                    </td>
+                                    <td><span class="badge text-bg-secondary" th:text="${a.status}"></span></td>
+                                </tr>
+                                <tr th:if="${appointments == null or appointments.isEmpty()}">
+                                    <td colspan="5" class="text-muted text-center py-4">No hay citas para este día.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+

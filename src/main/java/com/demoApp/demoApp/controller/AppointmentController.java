@@ -64,6 +64,20 @@ public class AppointmentController {
         return "administration/appointments/index";
     }
 
+    @GetMapping("/agenda")
+    public String agenda(
+            @RequestParam(value = "date", required = false) LocalDate date,
+            Model model
+    ) {
+        LocalDate target = date != null ? date : LocalDate.now();
+        LocalDateTime start = target.atStartOfDay();
+        LocalDateTime end = target.plusDays(1).atStartOfDay();
+
+        model.addAttribute("date", target);
+        model.addAttribute("appointments", appointmentServiceManager.getAgendaRange(start, end));
+        return "administration/appointments/agenda";
+    }
+
     @PostMapping({"", "/"})
     public String create(@Valid @ModelAttribute("request") CreateAppointmentRequest request,
                          BindingResult result,
