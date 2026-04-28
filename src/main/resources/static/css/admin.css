@@ -134,3 +134,13 @@
 .admin-page .mobile-cards .actions .btn.btn-outline-light:hover {
     background: var(--admin-accent-soft);
 }
+
+/* Dropdown labels (avoid overflow in narrow widths) */
+.admin-page .dropdown-toggle .dropdown-label {
+    display: inline-block;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}

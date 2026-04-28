@@ -219,7 +219,7 @@
                                         id="statusDropdown"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <span id="statusDropdownLabel">CREATED</span>
+                                    <span id="statusDropdownLabel" class="dropdown-label">CREATED</span>
                                 </button>
                                 <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
                                     <li th:each="s : ${statuses}">
@@ -244,7 +244,7 @@
                                         id="clientDropdown"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <span id="clientDropdownLabel">Selecciona un cliente</span>
+                                    <span id="clientDropdownLabel" class="dropdown-label">Selecciona un cliente</span>
                                 </button>
                                 <ul class="dropdown-menu w-100" aria-labelledby="clientDropdown" style="max-height: 280px; overflow:auto;">
                                     <li th:each="c : ${clients}">
@@ -269,7 +269,7 @@
                                         id="technicianDropdown"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <span id="technicianDropdownLabel">Selecciona un técnico</span>
+                                    <span id="technicianDropdownLabel" class="dropdown-label">Selecciona un técnico</span>
                                 </button>
                                 <ul class="dropdown-menu w-100" aria-labelledby="technicianDropdown" style="max-height: 280px; overflow:auto;">
                                     <li th:each="u : ${technicians}">
@@ -287,10 +287,39 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Servicios</label>
                         <div class="col-sm-9">
-                            <select class="form-select" multiple size="6" th:field="*{serviceIds}" required>
-                                <option th:each="s : ${services}" th:value="${s.id}"
-                                        th:text="${s.name} + ' (' + ${s.category} + ')'"></option>
-                            </select>
+                            <div id="appt_serviceIds">
+                                <input th:each="sid : ${request.serviceIds}"
+                                       type="hidden"
+                                       name="serviceIds"
+                                       th:value="${sid}"/>
+                            </div>
+
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="servicesDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="servicesDropdownLabel" class="dropdown-label">Selecciona servicios</span>
+                                </button>
+                                <div class="dropdown-menu w-100 p-2"
+                                     aria-labelledby="servicesDropdown"
+                                     style="max-height: 280px; overflow:auto;">
+
+                                    <div class="form-check px-2 py-1" th:each="s : ${services}">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               th:id="${'svc_' + s.id}"
+                                               th:attr="data-id=${s.id},data-text=${s.name + ' (' + s.category + ')'}"
+                                               onchange="toggleService(this.getAttribute('data-id'), this.getAttribute('data-text'), this.checked)">
+                                        <label class="form-check-label w-100"
+                                               th:for="${'svc_' + s.id}"
+                                               th:text="${s.name} + ' (' + ${s.category} + ')'"></label>
+                                    </div>
+
+                                </div>
+                            </div>
+
                             <div class="form-text">Puedes seleccionar múltiples servicios (combo).</div>
                         </div>
                     </div>
@@ -343,6 +372,46 @@
         }
     }
 
+    function toggleService(id, text, checked) {
+        const container = document.getElementById('appt_serviceIds');
+        if (!container) return;
+
+        if (checked) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'serviceIds';
+            input.value = id;
+            input.setAttribute('data-service-id', id);
+            input.setAttribute('data-service-text', text);
+            container.appendChild(input);
+        } else {
+            const existing = container.querySelector('input[data-service-id="' + id + '"]');
+            if (existing) existing.remove();
+        }
+
+        updateServicesLabelFromHidden();
+    }
+
+    function updateServicesLabelFromHidden() {
+        const container = document.getElementById('appt_serviceIds');
+        const label = document.getElementById('servicesDropdownLabel');
+        if (!container || !label) return;
+
+        const inputs = Array.from(container.querySelectorAll('input[name="serviceIds"]'));
+        if (inputs.length === 0) {
+            label.textContent = 'Selecciona servicios';
+            return;
+        }
+
+        if (inputs.length <= 2) {
+            const names = inputs.map(i => i.getAttribute('data-service-text') || ('ID ' + i.value));
+            label.textContent = names.join(', ');
+            return;
+        }
+
+        label.textContent = inputs.length + ' servicios seleccionados';
+    }
+
     function openCreateModal(dateValue) {
         if (dateValue) {
             document.getElementById('appt_date').value = dateValue;
@@ -366,6 +435,23 @@
                 setAppointmentTechnician(techId, techBtn.getAttribute('data-text'));
             }
         }
+
+        // Restore service checkboxes + label from hidden inputs
+        const serviceIds = Array.from(document.querySelectorAll('#appt_serviceIds input[name="serviceIds"]'))
+            .map(i => i.value);
+        const checkboxes = document.querySelectorAll('#servicesDropdown [data-id]');
+        for (const checkbox of checkboxes) {
+            checkbox.checked = serviceIds.includes(checkbox.getAttribute('data-id'));
+        }
+        // Populate missing text attributes for persisted hidden values (if any)
+        for (const checkbox of checkboxes) {
+            const id = checkbox.getAttribute('data-id');
+            const hidden = document.querySelector('#appt_serviceIds input[data-service-id="' + id + '"]');
+            if (hidden && !hidden.getAttribute('data-service-text')) {
+                hidden.setAttribute('data-service-text', checkbox.getAttribute('data-text'));
+            }
+        }
+        updateServicesLabelFromHidden();
 
         const modal = new bootstrap.Modal(document.getElementById('createAppointmentModal'));
         modal.show();
