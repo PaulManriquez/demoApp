@@ -13,22 +13,74 @@
     <link th:href="@{/css/admin.css}" rel="stylesheet">
 
     <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(0,0,0,.06);
+            gap: 1px;
+        }
+
+        .calendar-head {
+            background: #f8fafc;
+            padding: .6rem .25rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: .9rem;
+            color: rgba(15, 23, 42, .8);
+        }
+
         .calendar-day {
             min-height: 120px;
-            border: 1px solid rgba(0,0,0,.08);
+            padding: .5rem;
+            background: #fff;
         }
+
         .calendar-day.outside-month {
-            background: rgba(0,0,0,.02);
+            background: rgba(15, 23, 42, .02);
         }
+
         .calendar-day-number {
             font-size: .85rem;
-            font-weight: 600;
+            font-weight: 700;
         }
+
         .appt {
             font-size: .8rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        .appt-count {
+            display: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .calendar-grid {
+                border-radius: 12px;
+            }
+            .calendar-day {
+                min-height: 78px;
+                padding: .35rem;
+            }
+            .calendar-head {
+                padding: .45rem .15rem;
+                font-size: .8rem;
+            }
+            .appt {
+                display: none;
+            }
+            .appt-count {
+                display: inline-block;
+                font-size: .75rem;
+            }
+            .calendar-day .btn.btn-sm {
+                padding: .1rem .35rem;
+                line-height: 1.2;
+            }
         }
     </style>
 </head>
@@ -54,7 +106,7 @@
                 <div th:replace="~{fragments/alertsTemplate :: alert}"></div>
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
                         <a class="btn btn-outline-secondary"
                            th:href="@{/appointments(year=${yearMonth.minusMonths(1).year},month=${yearMonth.minusMonths(1).monthValue})}">
                             ‹
@@ -68,7 +120,7 @@
                            th:href="@{/appointments}">
                             Hoy
                         </a>
-                        <a class="btn btn-outline-primary d-none d-sm-inline"
+                        <a class="btn btn-outline-primary"
                            th:href="@{/appointments/agenda(date=${today})}">
                             Ver agenda hoy
                         </a>
@@ -79,38 +131,47 @@
                     </button>
                 </div>
 
-                <div class="row g-0">
-                    <div class="col" th:each="dayName : ${dayNames}">
-                        <div class="p-2 text-center fw-semibold bg-light border"
-                             th:text="${dayName}"></div>
-                    </div>
-                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-head" th:each="dayName : ${dayNames}" th:text="${dayName}"></div>
 
-                <div th:each="week : ${weeks}" class="row g-0">
-                    <div th:each="day : ${week}" class="col calendar-day p-2"
-                         th:classappend="${day.monthValue != yearMonth.monthValue} ? ' outside-month'">
+                    <th:block th:each="week : ${weeks}">
+                        <div th:each="day : ${week}" class="calendar-day"
+                             th:classappend="${day.monthValue != yearMonth.monthValue} ? ' outside-month'">
 
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <div class="calendar-day-number"
-                                 th:classappend="${day.equals(today)} ? ' text-primary'">
-                                <span th:text="${day.dayOfMonth}"></span>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <a class="calendar-day-number text-decoration-none"
+                                   th:href="@{/appointments/agenda(date=${day})}"
+                                   th:classappend="${day.equals(today)} ? ' text-primary' : ' text-dark'">
+                                    <span th:text="${day.dayOfMonth}"></span>
+                                </a>
+                                <button class="btn btn-sm btn-outline-primary"
+                                        type="button"
+                                        th:attr="data-date=${day}"
+                                        onclick="openCreateModal(this.getAttribute('data-date'))">
+                                    +
+                                </button>
                             </div>
-                            <button class="btn btn-sm btn-outline-primary"
-                                    type="button"
-                                    th:attr="data-date=${day}"
-                                    onclick="openCreateModal(this.getAttribute('data-date'))">
-                                +
-                            </button>
-                        </div>
 
-                        <div th:if="${appointmentsByDay[day] != null}">
-                            <div th:each="a : ${appointmentsByDay[day]}" class="appt">
-                                <span class="badge bg-secondary"
-                                      th:text="${#temporals.format(a.startAt,'HH:mm')}"></span>
-                                <span th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></span>
+                            <div class="appt-count">
+                                <a class="badge text-bg-secondary text-decoration-none"
+                                   th:href="@{/appointments/agenda(date=${day})}"
+                                   th:text="${appointmentsByDay[day] != null ? appointmentsByDay[day].size() : 0} + ' citas'"></a>
+                            </div>
+
+                            <div th:if="${appointmentsByDay[day] != null}">
+                                <div th:each="a, iter : ${appointmentsByDay[day]}"
+                                     th:if="${iter.index &lt; 2}"
+                                     class="appt">
+                                    <span class="badge text-bg-secondary"
+                                          th:text="${#temporals.format(a.startAt,'HH:mm')}"></span>
+                                    <span th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></span>
+                                </div>
+                                <div class="appt text-muted" th:if="${appointmentsByDay[day].size() &gt; 2}">
+                                    <span th:text="'+' + (${appointmentsByDay[day].size()} - 2) + ' más'"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </th:block>
                 </div>
 
             </div>

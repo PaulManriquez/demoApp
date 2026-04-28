@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/appointments")
@@ -165,6 +166,7 @@ public class AppointmentController {
         model.addAttribute("appointmentsByDay", byDay);
         model.addAttribute("today", today);
         model.addAttribute("dayNames", List.of("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"));
+        model.addAttribute("todayAppointments", Optional.ofNullable(byDay.get(today)).orElseGet(List::of));
 
         model.addAttribute("request", request);
         model.addAttribute("clients", clientsRepository.findAll());
