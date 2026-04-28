@@ -237,22 +237,50 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Cliente</label>
                         <div class="col-sm-9">
-                            <select class="form-select" th:field="*{clientId}" required>
-                                <option value="" disabled selected>Selecciona un cliente</option>
-                                <option th:each="c : ${clients}" th:value="${c.id}"
-                                        th:text="${c.firstName} + ' ' + ${c.lastName}"></option>
-                            </select>
+                            <input type="hidden" id="appt_clientId" th:field="*{clientId}">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="clientDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="clientDropdownLabel">Selecciona un cliente</span>
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="clientDropdown" style="max-height: 280px; overflow:auto;">
+                                    <li th:each="c : ${clients}">
+                                        <button class="dropdown-item"
+                                                type="button"
+                                                th:attr="data-value=${c.id},data-text=${c.firstName + ' ' + c.lastName}"
+                                                onclick="setAppointmentClient(this.getAttribute('data-value'), this.getAttribute('data-text'))"
+                                                th:text="${c.firstName} + ' ' + ${c.lastName}"></button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Técnico</label>
                         <div class="col-sm-9">
-                            <select class="form-select" th:field="*{technicianUserId}" required>
-                                <option value="" disabled selected>Selecciona un técnico</option>
-                                <option th:each="u : ${technicians}" th:value="${u.id}"
-                                        th:text="${u.name} + ' ' + ${u.lastName}"></option>
-                            </select>
+                            <input type="hidden" id="appt_technicianUserId" th:field="*{technicianUserId}">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="technicianDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="technicianDropdownLabel">Selecciona un técnico</span>
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="technicianDropdown" style="max-height: 280px; overflow:auto;">
+                                    <li th:each="u : ${technicians}">
+                                        <button class="dropdown-item"
+                                                type="button"
+                                                th:attr="data-value=${u.id},data-text=${u.name + ' ' + u.lastName}"
+                                                onclick="setAppointmentTechnician(this.getAttribute('data-value'), this.getAttribute('data-text'))"
+                                                th:text="${u.name} + ' ' + ${u.lastName}"></button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -297,12 +325,48 @@
         }
     }
 
+    function setAppointmentClient(value, text) {
+        const input = document.getElementById('appt_clientId');
+        input.value = value;
+        const label = document.getElementById('clientDropdownLabel');
+        if (label) {
+            label.textContent = text;
+        }
+    }
+
+    function setAppointmentTechnician(value, text) {
+        const input = document.getElementById('appt_technicianUserId');
+        input.value = value;
+        const label = document.getElementById('technicianDropdownLabel');
+        if (label) {
+            label.textContent = text;
+        }
+    }
+
     function openCreateModal(dateValue) {
         if (dateValue) {
             document.getElementById('appt_date').value = dateValue;
         }
         const currentStatus = document.getElementById('appt_status').value || 'CREATED';
         setAppointmentStatus(currentStatus);
+
+        // If values were already selected (validation errors), keep the labels readable.
+        const clientId = document.getElementById('appt_clientId').value;
+        if (clientId) {
+            const clientBtn = document.querySelector('#clientDropdown [data-value="' + clientId + '"]');
+            if (clientBtn) {
+                setAppointmentClient(clientId, clientBtn.getAttribute('data-text'));
+            }
+        }
+
+        const techId = document.getElementById('appt_technicianUserId').value;
+        if (techId) {
+            const techBtn = document.querySelector('#technicianDropdown [data-value="' + techId + '"]');
+            if (techBtn) {
+                setAppointmentTechnician(techId, techBtn.getAttribute('data-text'));
+            }
+        }
+
         const modal = new bootstrap.Modal(document.getElementById('createAppointmentModal'));
         modal.show();
     }
