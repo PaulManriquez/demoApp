@@ -205,16 +205,32 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Duración (min)</label>
-                        <div class="col-sm-3">
+                    <div class="row mb-3 g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label">Duración (min)</label>
                             <input type="number" min="5" class="form-control" th:field="*{durationMinutes}" required>
                         </div>
-                        <label class="col-sm-3 col-form-label">Estado</label>
-                        <div class="col-sm-3">
-                            <select class="form-select" th:field="*{status}">
-                                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
-                            </select>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label">Estado</label>
+                            <input type="hidden" id="appt_status" th:field="*{status}">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="statusDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="statusDropdownLabel">CREATED</span>
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
+                                    <li th:each="s : ${statuses}">
+                                        <button class="dropdown-item"
+                                                type="button"
+                                                th:attr="data-value=${s.name()}"
+                                                onclick="setAppointmentStatus(this.getAttribute('data-value'))"
+                                                th:text="${s.name()}"></button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -272,10 +288,21 @@
 
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script>
+    function setAppointmentStatus(value) {
+        const input = document.getElementById('appt_status');
+        input.value = value;
+        const label = document.getElementById('statusDropdownLabel');
+        if (label) {
+            label.textContent = value;
+        }
+    }
+
     function openCreateModal(dateValue) {
         if (dateValue) {
             document.getElementById('appt_date').value = dateValue;
         }
+        const currentStatus = document.getElementById('appt_status').value || 'CREATED';
+        setAppointmentStatus(currentStatus);
         const modal = new bootstrap.Modal(document.getElementById('createAppointmentModal'));
         modal.show();
     }
