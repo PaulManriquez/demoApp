@@ -137,9 +137,10 @@
                                         Editar
                                     </button>
 
-                                    <a class="btn btn-outline-light btn-sm"
+                                    <a class="btn btn-sm"
+                                       th:classappend="${s.visible} ? ' btn-outline-danger' : ' btn-outline-success'"
                                        th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
-                                        <span th:text="${s.visible} ? 'Ocultar' : 'Mostrar'"></span>
+                                        <span th:text="${s.visible} ? 'Deshabilitar' : 'Habilitar'"></span>
                                     </a>
                                 </div>
                             </div>
@@ -191,9 +192,10 @@
                                             Edit
                                         </button>
 
-                                        <a class="btn btn-outline-secondary btn-sm"
+                                        <a class="btn btn-sm"
+                                           th:classappend="${s.visible} ? ' btn-outline-danger' : ' btn-outline-success'"
                                            th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
-                                            <span th:text="${s.visible} ? 'Ocultar' : 'Mostrar'"></span>
+                                            <span th:text="${s.visible} ? 'Deshabilitar' : 'Habilitar'"></span>
                                         </a>
                                     </td>
                                 </tr>

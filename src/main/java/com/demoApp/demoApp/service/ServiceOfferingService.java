@@ -64,7 +64,6 @@ public class ServiceOfferingService {
                 .orElseThrow(() -> new IllegalArgumentException("El servicio no existe"));
         existing.setVisible(!existing.isVisible());
         serviceOfferingRepository.save(existing);
-        return new Message("Visibilidad actualizada con exito", true);
+        return new Message(existing.isVisible() ? "Servicio habilitado" : "Servicio deshabilitado", true);
     }
 }
-
