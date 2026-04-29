@@ -55,9 +55,25 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-2 col-form-label" for="category">Giro:</label>
                                     <div class="col-sm-6">
-                                        <select id="category" class="form-select" th:field="*{category}" required>
-                                            <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
-                                        </select>
+                                        <input type="hidden" id="service_category" th:field="*{category}">
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                                    type="button"
+                                                    id="categoryDropdown"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <span id="categoryDropdownLabel" class="dropdown-label">Selecciona giro</span>
+                                            </button>
+                                            <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
+                                                <li th:each="c : ${categories}">
+                                                    <button class="dropdown-item"
+                                                            type="button"
+                                                            th:attr="data-value=${c}"
+                                                            onclick="setServiceCategory(this.getAttribute('data-value'))"
+                                                            th:text="${c}"></button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -238,9 +254,25 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label" for="edit_category">Giro:</label>
                         <div class="col-sm-9">
-                            <select id="edit_category" name="category" class="form-select" required>
-                                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
-                            </select>
+                            <input type="hidden" id="edit_service_category" name="category">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="editCategoryDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="editCategoryDropdownLabel" class="dropdown-label">Selecciona giro</span>
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="editCategoryDropdown">
+                                    <li th:each="c : ${categories}">
+                                        <button class="dropdown-item"
+                                                type="button"
+                                                th:attr="data-value=${c}"
+                                                onclick="setEditServiceCategory(this.getAttribute('data-value'))"
+                                                th:text="${c}"></button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -288,10 +320,28 @@
 
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script>
+    function setServiceCategory(value) {
+        const input = document.getElementById('service_category');
+        input.value = value;
+        const label = document.getElementById('categoryDropdownLabel');
+        if (label) {
+            label.textContent = value;
+        }
+    }
+
+    function setEditServiceCategory(value) {
+        const input = document.getElementById('edit_service_category');
+        input.value = value;
+        const label = document.getElementById('editCategoryDropdownLabel');
+        if (label) {
+            label.textContent = value;
+        }
+    }
+
     function showEditServiceModal(button) {
         document.getElementById('edit_id').value = button.getAttribute('data-id');
         document.getElementById('edit_name').value = button.getAttribute('data-name');
-        document.getElementById('edit_category').value = button.getAttribute('data-category');
+        setEditServiceCategory(button.getAttribute('data-category'));
         document.getElementById('edit_duration').value = button.getAttribute('data-durationMinutes');
         document.getElementById('edit_price').value = button.getAttribute('data-price');
         document.getElementById('edit_description').value = button.getAttribute('data-description') || '';
@@ -302,6 +352,14 @@
         const modal = new bootstrap.Modal(document.getElementById('editServiceModal'));
         modal.show();
     }
+
+    // Initialize create form label from bound value (if any)
+    (function initServiceCategoryLabel() {
+        const input = document.getElementById('service_category');
+        if (input && input.value) {
+            setServiceCategory(input.value);
+        }
+    })();
 </script>
 
 </body>

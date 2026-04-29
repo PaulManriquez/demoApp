@@ -60,7 +60,6 @@ public class ClientService {
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no existe"));
         existing.setActive(!existing.getActive());
         clientsRepository.save(existing);
-        return new Message("Estado del cliente actualizado con exito", true);
+        return new Message(existing.getActive() ? "Cliente habilitado" : "Cliente deshabilitado", true);
     }
 }
-

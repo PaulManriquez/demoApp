@@ -121,9 +121,10 @@
                                         Editar
                                     </button>
 
-                                    <a class="btn btn-outline-light btn-sm"
+                                    <a class="btn btn-sm"
+                                       th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
                                        th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
-                                        <span th:text="${c.active} ? 'Desactivar' : 'Activar'"></span>
+                                        <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
                                     </a>
                                 </div>
                             </div>
@@ -170,9 +171,10 @@
                                             Edit
                                         </button>
 
-                                        <a class="btn btn-outline-secondary btn-sm"
+                                        <a class="btn btn-sm"
+                                           th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
                                            th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
-                                            <span th:text="${c.active} ? 'Desactivar' : 'Activar'"></span>
+                                            <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
                                         </a>
                                     </td>
                                 </tr>
