@@ -94,6 +94,10 @@ public class AppointmentController {
 
         Client client = clientsRepository.findById(request.getClientId())
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no existe"));
+        if (Boolean.FALSE.equals(client.getActive())) {
+            attributes.addFlashAttribute("msg", new Message("El cliente esta deshabilitado", false));
+            return "redirect:/appointments?year=" + request.getDate().getYear() + "&month=" + request.getDate().getMonthValue();
+        }
         User technician = userRepository.findById(request.getTechnicianUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Tecnico no existe"));
 
@@ -169,7 +173,7 @@ public class AppointmentController {
         model.addAttribute("todayAppointments", Optional.ofNullable(byDay.get(today)).orElseGet(List::of));
 
         model.addAttribute("request", request);
-        model.addAttribute("clients", clientsRepository.findAll());
+        model.addAttribute("clients", clientsRepository.findAllByActiveTrueOrderByFirstNameAscLastNameAsc());
         model.addAttribute("technicians", userRepository.findAllTechnicians());
         model.addAttribute("services", serviceOfferingService.getVisibleServicesForSelector());
         model.addAttribute("statuses", AppointmentStatus.values());
