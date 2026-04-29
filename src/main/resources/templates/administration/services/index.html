@@ -53,7 +53,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label" for="category">Giro:</label>
+                                    <label class="col-sm-2 col-form-label" for="category">Servicio:</label>
                                     <div class="col-sm-6">
                                         <input type="hidden" id="service_category" th:field="*{category}">
                                         <div class="dropdown w-100">
@@ -62,7 +62,7 @@
                                                     id="categoryDropdown"
                                                     data-bs-toggle="dropdown"
                                                     aria-expanded="false">
-                                                <span id="categoryDropdownLabel" class="dropdown-label">Selecciona giro</span>
+                                                <span id="categoryDropdownLabel" class="dropdown-label">Selecciona el servicio</span>
                                             </button>
                                             <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
                                                 <li th:each="c : ${categories}">
@@ -177,7 +177,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
-                                    <th>Giro</th>
+                                    <th>Servicio</th>
                                     <th>Duración</th>
                                     <th>Precio</th>
                                     <th>Visible</th>
@@ -252,7 +252,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label" for="edit_category">Giro:</label>
+                        <label class="col-sm-3 col-form-label" for="edit_category">Servicio:</label>
                         <div class="col-sm-9">
                             <input type="hidden" id="edit_service_category" name="category">
                             <div class="dropdown w-100">
@@ -261,7 +261,7 @@
                                         id="editCategoryDropdown"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <span id="editCategoryDropdownLabel" class="dropdown-label">Selecciona giro</span>
+                                    <span id="editCategoryDropdownLabel" class="dropdown-label">Selecciona el servicio</span>
                                 </button>
                                 <ul class="dropdown-menu w-100" aria-labelledby="editCategoryDropdown">
                                     <li th:each="c : ${categories}">
