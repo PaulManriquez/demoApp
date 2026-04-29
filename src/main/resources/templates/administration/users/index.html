@@ -259,10 +259,30 @@
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Status</label>
                         <div class="col-sm-4">
-                            <select id="edit_status" class="form-select" name="status">
-                                <option value="true">Activo</option>
-                                <option value="false">Inactivo</option>
-                            </select>
+                            <input type="hidden" id="edit_status" name="status" value="true">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                        type="button"
+                                        id="userStatusDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="userStatusDropdownLabel" class="dropdown-label">Activo</span>
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="userStatusDropdown">
+                                    <li>
+                                        <button class="dropdown-item" type="button"
+                                                onclick="setUserStatus(true)">
+                                            Activo
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" type="button"
+                                                onclick="setUserStatus(false)">
+                                            Inactivo
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <label class="col-sm-2 col-form-label">Roles</label>
                         <div class="col-sm-4">
@@ -285,6 +305,15 @@
 
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script>
+    function setUserStatus(active) {
+        const input = document.getElementById('edit_status');
+        input.value = active ? 'true' : 'false';
+        const label = document.getElementById('userStatusDropdownLabel');
+        if (label) {
+            label.textContent = active ? 'Activo' : 'Inactivo';
+        }
+    }
+
     function showEditUserModal(button) {
         document.getElementById('edit_id').value = button.getAttribute('data-id');
         document.getElementById('edit_name').value = button.getAttribute('data-name');
@@ -292,7 +321,7 @@
         document.getElementById('edit_username').value = button.getAttribute('data-username');
         document.getElementById('edit_email').value = button.getAttribute('data-email');
         document.getElementById('edit_phone').value = button.getAttribute('data-phone') || '';
-        document.getElementById('edit_status').value = button.getAttribute('data-status');
+        setUserStatus(button.getAttribute('data-status') === 'true');
 
         const roleIdsCsv = button.getAttribute('data-roleIds') || '';
         const roleIds = roleIdsCsv.split(',').filter(Boolean);
