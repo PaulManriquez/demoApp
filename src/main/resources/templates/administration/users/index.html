@@ -81,10 +81,30 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-2 col-form-label">Status</label>
                                     <div class="col-sm-4">
-                                        <select class="form-select" th:field="*{status}">
-                                            <option th:value="true">Activo</option>
-                                            <option th:value="false">Inactivo</option>
-                                        </select>
+                                        <input type="hidden" id="create_status" th:field="*{status}">
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                                    type="button"
+                                                    id="createUserStatusDropdown"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <span id="createUserStatusDropdownLabel" class="dropdown-label">Activo</span>
+                                            </button>
+                                            <ul class="dropdown-menu w-100" aria-labelledby="createUserStatusDropdown">
+                                                <li>
+                                                    <button class="dropdown-item" type="button"
+                                                            onclick="setCreateUserStatus(true)">
+                                                        Activo
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item" type="button"
+                                                            onclick="setCreateUserStatus(false)">
+                                                        Inactivo
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                     <label class="col-sm-2 col-form-label">Roles</label>
                                     <div class="col-sm-4">
@@ -329,6 +349,15 @@
 
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script>
+    function setCreateUserStatus(active) {
+        const input = document.getElementById('create_status');
+        input.value = active ? 'true' : 'false';
+        const label = document.getElementById('createUserStatusDropdownLabel');
+        if (label) {
+            label.textContent = active ? 'Activo' : 'Inactivo';
+        }
+    }
+
     function setUserStatus(active) {
         const input = document.getElementById('edit_status');
         input.value = active ? 'true' : 'false';
@@ -413,6 +442,14 @@
         const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
         modal.show();
     }
+
+    // Initialize create form status label from bound value (if any)
+    (function initCreateUserStatusLabel() {
+        const input = document.getElementById('create_status');
+        if (!input) return;
+        const isActive = input.value === '' || input.value === 'true';
+        setCreateUserStatus(isActive);
+    })();
 </script>
 
 </body>
