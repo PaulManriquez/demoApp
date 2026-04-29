@@ -37,6 +37,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
        FROM User u
        JOIN u.roles r
        WHERE r.name = 'TECHNICIAN'
+         AND u.status = true
        ORDER BY u.name ASC
        """)
     List<User> findAllTechnicians();

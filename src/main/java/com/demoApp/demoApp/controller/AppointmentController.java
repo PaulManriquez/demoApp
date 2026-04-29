@@ -100,6 +100,10 @@ public class AppointmentController {
         }
         User technician = userRepository.findById(request.getTechnicianUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Tecnico no existe"));
+        if (!technician.isStatus()) {
+            attributes.addFlashAttribute("msg", new Message("El tecnico esta deshabilitado", false));
+            return "redirect:/appointments?year=" + request.getDate().getYear() + "&month=" + request.getDate().getMonthValue();
+        }
 
         LocalDateTime startAt = LocalDateTime.of(request.getDate(), request.getTime());
         LocalDateTime endAt = startAt.plusMinutes(request.getDurationMinutes());
