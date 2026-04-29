@@ -108,9 +108,38 @@
                                     </div>
                                     <label class="col-sm-2 col-form-label">Roles</label>
                                     <div class="col-sm-4">
-                                        <select class="form-select" multiple size="4" th:field="*{roleIds}">
-                                            <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}"></option>
-                                        </select>
+                                        <div id="create_userRoleIds">
+                                            <input th:each="rid : ${userForm.roleIds}"
+                                                   type="hidden"
+                                                   name="roleIds"
+                                                   th:value="${rid}"/>
+                                        </div>
+
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-outline-primary dropdown-toggle w-100 text-start"
+                                                    type="button"
+                                                    id="createUserRolesDropdown"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <span id="createUserRolesDropdownLabel" class="dropdown-label">Selecciona roles</span>
+                                            </button>
+                                            <div class="dropdown-menu w-100 p-2"
+                                                 aria-labelledby="createUserRolesDropdown"
+                                                 style="max-height: 280px; overflow:auto;">
+
+                                                <div class="form-check px-2 py-1" th:each="r : ${roles}">
+                                                    <input class="form-check-input"
+                                                           type="checkbox"
+                                                           th:id="${'create_user_role_' + r.id}"
+                                                           th:attr="data-id=${r.id},data-text=${r.name}"
+                                                           onchange="toggleCreateUserRole(this.getAttribute('data-id'), this.getAttribute('data-text'), this.checked)">
+                                                    <label class="form-check-label w-100"
+                                                           th:for="${'create_user_role_' + r.id}"
+                                                           th:text="${r.name}"></label>
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -358,6 +387,46 @@
         }
     }
 
+    function toggleCreateUserRole(id, text, checked) {
+        const container = document.getElementById('create_userRoleIds');
+        if (!container) return;
+
+        if (checked) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'roleIds';
+            input.value = id;
+            input.setAttribute('data-role-id', id);
+            input.setAttribute('data-role-text', text);
+            container.appendChild(input);
+        } else {
+            const existing = container.querySelector('input[data-role-id="' + id + '"]');
+            if (existing) existing.remove();
+        }
+
+        updateCreateUserRolesLabelFromHidden();
+    }
+
+    function updateCreateUserRolesLabelFromHidden() {
+        const container = document.getElementById('create_userRoleIds');
+        const label = document.getElementById('createUserRolesDropdownLabel');
+        if (!container || !label) return;
+
+        const inputs = Array.from(container.querySelectorAll('input[name="roleIds"]'));
+        if (inputs.length === 0) {
+            label.textContent = 'Selecciona roles';
+            return;
+        }
+
+        if (inputs.length <= 2) {
+            const names = inputs.map(i => i.getAttribute('data-role-text') || ('ID ' + i.value));
+            label.textContent = names.join(', ');
+            return;
+        }
+
+        label.textContent = inputs.length + ' roles seleccionados';
+    }
+
     function setUserStatus(active) {
         const input = document.getElementById('edit_status');
         input.value = active ? 'true' : 'false';
@@ -449,6 +518,25 @@
         if (!input) return;
         const isActive = input.value === '' || input.value === 'true';
         setCreateUserStatus(isActive);
+    })();
+
+    (function initCreateUserRoles() {
+        const container = document.getElementById('create_userRoleIds');
+        if (!container) return;
+
+        const roleIds = Array.from(container.querySelectorAll('input[name="roleIds"]')).map(i => i.value);
+        const checkboxes = document.querySelectorAll('#createUserRolesDropdown [data-id]');
+        for (const checkbox of checkboxes) {
+            const id = checkbox.getAttribute('data-id');
+            checkbox.checked = roleIds.includes(id);
+            if (checkbox.checked) {
+                const hidden = container.querySelector('input[data-role-id="' + id + '"]');
+                if (hidden && !hidden.getAttribute('data-role-text')) {
+                    hidden.setAttribute('data-role-text', checkbox.getAttribute('data-text'));
+                }
+            }
+        }
+        updateCreateUserRolesLabelFromHidden();
     })();
 </script>
 
