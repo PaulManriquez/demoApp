@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentServiceManager {
@@ -39,6 +40,22 @@ public class AppointmentServiceManager {
 
     public List<Appointment> getAgendaRange(LocalDateTime startInclusive, LocalDateTime endExclusive) {
         return appointmentRepository.findForAgendaRangeWithDetails(startInclusive, endExclusive);
+    }
+
+    public Optional<Appointment> getNextAppointment(LocalDateTime now) {
+        List<Appointment> items = appointmentRepository.findNextActiveAppointments(
+                now,
+                List.of(AppointmentStatus.CREATED, AppointmentStatus.CONFIRMED)
+        );
+        return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
+    }
+
+    public List<Appointment> getUpcomingAppointments(LocalDateTime startInclusive, LocalDateTime endExclusive) {
+        return appointmentRepository.findUpcomingForRangeWithDetails(
+                startInclusive,
+                endExclusive,
+                List.of(AppointmentStatus.CREATED, AppointmentStatus.CONFIRMED)
+        );
     }
 
     @Transactional

@@ -34,8 +34,95 @@
 
             <!-- Page Content -->
             <div class="container-fluid py-4">
-                <h1 class="h4 mb-2">Dashboard</h1>
-                <p class="text-muted mb-0">Servicios, citas, clientes, usuarios y roles.</p>
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <h1 class="h4 mb-1">Resumen de hoy</h1>
+                        <div class="text-muted" th:text="${#temporals.format(today,'yyyy-MM-dd')}"></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-primary" th:href="@{/appointments}">Calendario</a>
+                        <a class="btn btn-primary" th:href="@{/appointments/agenda(date=${today})}">Agenda de hoy</a>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-2">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="text-muted small">Total</div>
+                                <div class="h4 mb-0" th:text="${todayCounts['TOTAL']}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-2" th:each="s : ${statusOrder}">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="text-muted small" th:text="${s}"></div>
+                                <div class="h4 mb-0" th:text="${todayCounts[s]}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header py-3">
+                                <div class="fw-semibold">Próximas citas (próximos <span th:text="${upcomingDays}">3</span> días)</div>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${upcomingAppointments == null or upcomingAppointments.isEmpty()}" class="text-muted">
+                                    No hay próximas citas en este rango.
+                                </div>
+                                <div class="list-group" th:if="${upcomingAppointments != null and !upcomingAppointments.isEmpty()}">
+                                    <a class="list-group-item list-group-item-action"
+                                       th:each="a, iter : ${upcomingAppointments}"
+                                       th:if="${iter.index < 8}"
+                                       th:href="@{/appointments/agenda(date=${a.startAt.toLocalDate()})}">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="fw-semibold"
+                                                     th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></div>
+                                                <div class="text-muted small">
+                                                    <span th:text="${#temporals.format(a.startAt,'EEE dd MMM HH:mm')}"></span>
+                                                    <span> • </span>
+                                                    <span th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></span>
+                                                </div>
+                                            </div>
+                                            <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+                                        </div>
+                                    </a>
+                                    <div class="text-muted small mt-2" th:if="${upcomingAppointments.size() > 8}">
+                                        <span th:text="'Mostrando 8 de ' + ${upcomingAppointments.size()} + ' (ver agenda para más)'"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header py-3">
+                                <div class="fw-semibold">Alertas</div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    <li>
+                                        Clientes deshabilitados en citas de hoy:
+                                        <strong th:text="${alertDisabledClients}">0</strong>
+                                    </li>
+                                    <li>
+                                        Técnicos deshabilitados en citas de hoy:
+                                        <strong th:text="${alertDisabledTechnicians}">0</strong>
+                                    </li>
+                                    <li>
+                                        Citas de hoy sin servicios:
+                                        <strong th:text="${alertMissingServices}">0</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </main>
