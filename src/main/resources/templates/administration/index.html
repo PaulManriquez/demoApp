@@ -102,23 +102,30 @@
                     <div class="col-lg-5">
                         <div class="card shadow-sm h-100">
                             <div class="card-header py-3">
-                                <div class="fw-semibold">Alertas</div>
+                                <div class="fw-semibold">Estados de hoy</div>
                             </div>
                             <div class="card-body">
-                                <ul class="mb-0">
-                                    <li>
-                                        Clientes deshabilitados en citas de hoy:
-                                        <strong th:text="${alertDisabledClients}">0</strong>
-                                    </li>
-                                    <li>
-                                        Técnicos deshabilitados en citas de hoy:
-                                        <strong th:text="${alertDisabledTechnicians}">0</strong>
-                                    </li>
-                                    <li>
-                                        Citas de hoy sin servicios:
-                                        <strong th:text="${alertMissingServices}">0</strong>
-                                    </li>
-                                </ul>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge text-bg-primary">Creadas</span>
+                                        <span class="fw-semibold" th:text="${todayCounts['CREATED']}">0</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">Confirmadas</span>
+                                        <span class="fw-semibold" th:text="${todayCounts['CONFIRMED']}">0</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge text-bg-danger">Canceladas</span>
+                                        <span class="fw-semibold" th:text="${todayCounts['CANCELED']}">0</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge text-bg-success">Completadas</span>
+                                        <span class="fw-semibold" th:text="${todayCounts['COMPLETED']}">0</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
