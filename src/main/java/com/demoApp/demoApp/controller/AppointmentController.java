@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping("/appointments")
@@ -167,11 +168,16 @@ public class AppointmentController {
 
         List<Appointment> appointments = appointmentServiceManager.getCalendarRange(rangeStart, rangeEnd);
         Map<LocalDate, List<Appointment>> byDay = groupByDay(appointments);
+        Map<String, Integer> countsByDay = new TreeMap<>();
+        for (Map.Entry<LocalDate, List<Appointment>> entry : byDay.entrySet()) {
+            countsByDay.put(entry.getKey().toString(), entry.getValue().size());
+        }
         List<List<LocalDate>> weeks = buildWeeks(gridStart, gridEndExclusive.minusDays(1));
 
         model.addAttribute("yearMonth", yearMonth);
         model.addAttribute("weeks", weeks);
         model.addAttribute("appointmentsByDay", byDay);
+        model.addAttribute("appointmentCountsByDay", countsByDay);
         model.addAttribute("today", today);
         model.addAttribute("dayNames", List.of("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"));
         model.addAttribute("todayAppointments", Optional.ofNullable(byDay.get(today)).orElseGet(List::of));

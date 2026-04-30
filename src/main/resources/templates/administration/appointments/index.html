@@ -55,7 +55,8 @@
         }
 
         .appt-count {
-            display: none;
+            display: inline-block;
+            font-size: .75rem;
         }
 
         @media (max-width: 767.98px) {
@@ -72,10 +73,6 @@
             }
             .appt {
                 display: none;
-            }
-            .appt-count {
-                display: inline-block;
-                font-size: .75rem;
             }
             .calendar-day .btn.btn-sm {
                 padding: .1rem .35rem;
@@ -155,7 +152,10 @@
                             <div class="appt-count">
                                 <a class="badge text-bg-secondary text-decoration-none"
                                    th:href="@{/appointments/agenda(date=${day})}"
-                                   th:text="${appointmentsByDay[day] != null ? appointmentsByDay[day].size() : 0} + ' citas'"></a>
+                                   th:if="${appointmentCountsByDay[day.toString()] != null and appointmentCountsByDay[day.toString()] > 0}"
+                                   th:text="${appointmentCountsByDay[day.toString()]} + ' citas'"></a>
+                                <span th:if="${appointmentCountsByDay[day.toString()] == null or appointmentCountsByDay[day.toString()] == 0}"
+                                      class="text-muted">0 citas</span>
                             </div>
 
                             <div th:if="${appointmentsByDay[day] != null}">
