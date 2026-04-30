@@ -59,6 +59,15 @@ public class AppointmentServiceManager {
     }
 
     @Transactional
+    public Message updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IllegalArgumentException("La cita no existe"));
+        appointment.setStatus(status);
+        appointmentRepository.save(appointment);
+        return new Message("Estado de la cita actualizado", true);
+    }
+
+    @Transactional
     public Message createAppointment(Appointment appointment, List<Integer> serviceIds) {
         if (appointment.getId() != null) {
             return new Message("La cita ya existe", false);

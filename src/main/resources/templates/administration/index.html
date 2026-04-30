@@ -75,12 +75,11 @@
                                     No hay próximas citas en este rango.
                                 </div>
                                 <div class="list-group" th:if="${upcomingAppointments != null and !upcomingAppointments.isEmpty()}">
-                                    <a class="list-group-item list-group-item-action"
-                                       th:each="a, iter : ${upcomingAppointments}"
-                                       th:if="${iter.index < 8}"
-                                       th:href="@{/appointments/agenda(date=${a.startAt.toLocalDate()})}">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
+                                    <div class="list-group-item"
+                                         th:each="a, iter : ${upcomingAppointments}"
+                                         th:if="${iter.index < 8}">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div class="flex-grow-1">
                                                 <div class="fw-semibold"
                                                      th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></div>
                                                 <div class="text-muted small">
@@ -88,10 +87,42 @@
                                                     <span> • </span>
                                                     <span th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></span>
                                                 </div>
+                                                <div class="text-muted small mt-1" th:if="${a.services != null and !a.services.isEmpty()}">
+                                                    <span th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                                </div>
                                             </div>
-                                            <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+
+                                            <div class="d-flex flex-column align-items-end gap-2">
+                                                <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                                            type="button"
+                                                            th:id="${'apptStatusDropdown_' + a.id}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        Cambiar
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end"
+                                                        th:attr="aria-labelledby=${'apptStatusDropdown_' + a.id}">
+                                                        <li th:each="s : ${statusOrder}">
+                                                            <form th:action="@{/appointments/status/{id}(id=${a.id})}" method="post" class="px-2">
+                                                                <input type="hidden" name="status" th:value="${s}">
+                                                                <input type="hidden" name="redirect" value="/admin">
+                                                                <button type="submit" class="dropdown-item"
+                                                                        th:text="${s}"></button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <a class="btn btn-outline-secondary btn-sm"
+                                                   th:href="@{/appointments/agenda(date=${a.startAt.toLocalDate()})}">
+                                                    Ver
+                                                </a>
+                                            </div>
                                         </div>
-                                    </a>
+                                    </div>
                                     <div class="text-muted small mt-2" th:if="${upcomingAppointments.size() > 8}">
                                         <span th:text="'Mostrando 8 de ' + ${upcomingAppointments.size()} + ' (ver agenda para más)'"></span>
                                     </div>

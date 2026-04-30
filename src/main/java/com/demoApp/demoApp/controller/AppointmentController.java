@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
@@ -121,6 +122,28 @@ public class AppointmentController {
         attributes.addFlashAttribute("msg", message);
 
         return "redirect:/appointments?year=" + request.getDate().getYear() + "&month=" + request.getDate().getMonthValue();
+    }
+
+    @PostMapping("/status/{id}")
+    public String updateStatus(@PathVariable("id") int id,
+                               @RequestParam("status") String status,
+                               RedirectAttributes attributes,
+                               @RequestParam(value = "redirect", required = false) String redirect) {
+        AppointmentStatus nextStatus;
+        try {
+            nextStatus = AppointmentStatus.valueOf(status);
+        } catch (IllegalArgumentException ex) {
+            attributes.addFlashAttribute("msg", new Message("Estado invalido", false));
+            return "redirect:/admin";
+        }
+
+        Message message = appointmentServiceManager.updateAppointmentStatus(id, nextStatus);
+        attributes.addFlashAttribute("msg", message);
+
+        if (redirect != null && !redirect.isBlank() && redirect.startsWith("/")) {
+            return "redirect:" + redirect;
+        }
+        return "redirect:/admin";
     }
 
     @ModelAttribute
