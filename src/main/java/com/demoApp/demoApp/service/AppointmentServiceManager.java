@@ -54,7 +54,14 @@ public class AppointmentServiceManager {
         return appointmentRepository.findUpcomingForRangeWithDetails(
                 startInclusive,
                 endExclusive,
-                List.of(AppointmentStatus.CREATED, AppointmentStatus.CONFIRMED)
+                // Dashboard view allows changing to any status; keep the item visible after updates.
+                List.of(
+                        AppointmentStatus.CREATED,
+                        AppointmentStatus.CONFIRMED,
+                        AppointmentStatus.CANCELED,
+                        AppointmentStatus.COMPLETED,
+                        AppointmentStatus.NO_SHOW
+                )
         );
     }
 
