@@ -80,12 +80,22 @@
                                                     <span th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></span>
                                                 </div>
                                                 <div class="text-muted small mt-1" th:if="${a.services != null and !a.services.isEmpty()}">
-                                                    <span th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                                    <span th:each="aps, iter : ${a.services}">
+                                                        <span th:if="${aps.service != null}" th:text="${aps.service.name}"></span><span th:if="${aps.service != null and !iter.last}">, </span>
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div class="d-flex flex-column align-items-end gap-2">
-                                                <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+                                                <span th:class="${'badge ' + (
+                                                        a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CREATED ? 'text-bg-primary' :
+                                                        a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CONFIRMED ? 'bg-success-subtle text-success-emphasis border border-success-subtle' :
+                                                        a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CANCELED ? 'text-bg-danger' :
+                                                        a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).COMPLETED ? 'text-bg-success' :
+                                                        a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).NO_SHOW ? 'text-bg-warning' :
+                                                        'text-bg-secondary'
+                                                )}"
+                                                      th:text="${a.status}"></span>
 
                                                 <div class="dropdown">
                                                     <button class="btn btn-outline-primary btn-sm dropdown-toggle"
