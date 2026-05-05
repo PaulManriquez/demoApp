@@ -73,12 +73,12 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>
-                                    <div class="col-sm-8">
-                                        <input id="mapsLink" type="text" class="form-control" th:field="*{mapsLink}" required>
-                                    </div>
-                                </div>
+<!--                                <div class="row mb-3">-->
+<!--                                    <label class="col-sm-2 col-form-label" for="mapsLink">Maps Link:</label>-->
+<!--                                    <div class="col-sm-8">-->
+<!--                                        <input id="mapsLink" type="text" class="form-control" th:field="*{mapsLink}" required>-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-primary" style="float:right">
@@ -116,7 +116,6 @@
                                             th:data-lastName="${c.lastName}"
                                             th:data-phone="${c.phone}"
                                             th:data-address="${c.address}"
-                                            th:data-mapsLink="${c.mapsLink}"
                                             onclick="showEditClientModal(this)">
                                         Editar
                                     </button>
@@ -166,7 +165,6 @@
                                                 th:data-lastName="${c.lastName}"
                                                 th:data-phone="${c.phone}"
                                                 th:data-address="${c.address}"
-                                                th:data-mapsLink="${c.mapsLink}"
                                                 onclick="showEditClientModal(this)">
                                             Edit
                                         </button>
@@ -235,13 +233,6 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label" for="edit_mapsLink">Maps Link:</label>
-                        <div class="col-sm-9">
-                            <input id="edit_mapsLink" name="mapsLink" type="text" class="form-control" required>
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -262,7 +253,6 @@
         document.getElementById('edit_lastName').value = button.getAttribute('data-lastName');
         document.getElementById('edit_phone').value = button.getAttribute('data-phone');
         document.getElementById('edit_address').value = button.getAttribute('data-address');
-        document.getElementById('edit_mapsLink').value = button.getAttribute('data-mapsLink');
         const modal = new bootstrap.Modal(document.getElementById('editClientModal'));
         modal.show();
     }

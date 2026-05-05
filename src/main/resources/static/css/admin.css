@@ -144,3 +144,58 @@
     white-space: nowrap;
     vertical-align: bottom;
 }
+
+/* Topbar */
+.admin-topbar {
+    background: rgba(255, 255, 255, .78);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, .03);
+}
+
+.admin-page .admin-user-toggle {
+    border-radius: 999px;
+    padding: .45rem .65rem;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, .04);
+}
+
+.admin-page .admin-user-toggle:hover {
+    background: #fff;
+}
+
+.admin-page .admin-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--admin-accent-soft);
+    border: 1px solid rgba(59, 130, 246, .25);
+    display: inline-block;
+    position: relative;
+    flex: 0 0 28px;
+}
+
+/* simple "person" glyph without external icon deps */
+.admin-page .admin-avatar::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, .85);
+    transform: translateX(-50%);
+}
+
+.admin-page .admin-avatar::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    width: 14px;
+    height: 9px;
+    border-radius: 999px 999px 10px 10px;
+    background: rgba(59, 130, 246, .65);
+    transform: translateX(-50%);
+}

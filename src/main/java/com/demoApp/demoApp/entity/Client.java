@@ -41,9 +41,9 @@ public class Client {
     @Column(name = "address", nullable = false, length = 255)
     private String address;
 
-    @NotBlank(message = "El maps link es obligatorio")
+//    @NotBlank(message = "El maps link es obligatorio")
     @Size(max = 255, message = "El maps link no puede exceder 255 caracteres")
-    @Column(name = "maps_link", nullable = false, length = 255)
+    @Column(name = "maps_link", nullable = true, length = 255)
     private String mapsLink;
 
     @NotBlank(message = "El telefono es obligatorio")

@@ -14,3 +14,11 @@ databaseChangeLog:
         - sqlFile:
             path: changes/002-core-seed.sql
             relativeToChangeLogFile: true
+
+  - changeSet:
+      id: 003-clients-maps-link-nullable
+      author: paul
+      changes:
+        - sqlFile:
+            path: changes/003-clients-maps-link-nullable.sql
+            relativeToChangeLogFile: true

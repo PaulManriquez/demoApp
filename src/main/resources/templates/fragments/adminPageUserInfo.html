@@ -5,7 +5,7 @@
 
 <div th:fragment="userInfo">
 
-  <nav class="navbar navbar-expand navbar-light bg-white border-bottom px-3 py-2">
+  <nav class="navbar navbar-expand navbar-light admin-topbar px-3 py-2">
 
     <!-- Mobile sidebar toggle -->
     <button class="btn btn-outline-secondary d-md-none me-2"
@@ -22,20 +22,21 @@
       <!-- User Dropdown -->
       <div class="dropdown" sec:authorize="isAuthenticated()">
 
-        <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+        <a class="btn btn-light border d-flex align-items-center gap-2 dropdown-toggle admin-user-toggle"
            href="#"
            id="userDropdown"
            data-bs-toggle="dropdown"
            aria-expanded="false">
 
-          <!-- Username -->
-          <span class="me-2 text-dark">
-              <span sec:authentication="name"></span>
+          <span class="admin-avatar" aria-hidden="true"></span>
+
+          <span class="text-dark dropdown-label">
+            <span sec:authentication="name"></span>
           </span>
 
           <!-- ADMIN Badge -->
           <span sec:authorize="hasRole('ADMIN')"
-                class="badge bg-danger me-2">
+                class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle">
               ADMIN
           </span>
 
@@ -48,7 +49,7 @@
           <li>
             <form th:action="@{/logout}" method="post">
               <button type="submit" class="dropdown-item">
-                Logout
+                Cerrar sesion
               </button>
             </form>
           </li>

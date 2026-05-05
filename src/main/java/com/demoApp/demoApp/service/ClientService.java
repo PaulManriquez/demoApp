@@ -48,7 +48,10 @@ public class ClientService {
         existing.setFirstName(client.getFirstName());
         existing.setLastName(client.getLastName());
         existing.setAddress(client.getAddress());
-        existing.setMapsLink(client.getMapsLink());
+        // mapsLink is being removed from the UI; don't wipe existing data when the field is omitted.
+        if (client.getMapsLink() != null) {
+            existing.setMapsLink(client.getMapsLink());
+        }
         existing.setPhone(client.getPhone());
 
         clientsRepository.save(existing);

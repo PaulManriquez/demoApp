@@ -113,10 +113,7 @@
                            th:href="@{/appointments(year=${yearMonth.plusMonths(1).year},month=${yearMonth.plusMonths(1).monthValue})}">
                             ›
                         </a>
-                        <a class="btn btn-outline-primary"
-                           th:href="@{/appointments}">
-                            Hoy
-                        </a>
+
                         <a class="btn btn-outline-primary"
                            th:href="@{/appointments/agenda(date=${today})}">
                             Ver agenda hoy
