@@ -73,14 +73,45 @@
                                             </div>
                                             <div>
                                                 Servicios:
-                                                <span th:if="${a.services != null and !a.services.isEmpty()}"
-                                                      th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                                <span th:if="${a.services != null and !a.services.isEmpty()}">
+                                                    <span th:each="aps, iter : ${a.services}">
+                                                        <span th:if="${aps.service != null}" th:text="${aps.service.name}"></span><span th:if="${aps.service != null and !iter.last}">, </span>
+                                                    </span>
+                                                </span>
                                                 <span th:if="${a.services == null or a.services.isEmpty()}">—</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div>
-                                        <span class="badge text-bg-secondary" th:text="${a.status}"></span>
+                                        <span th:class="${'badge ' + (
+                                                a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CREATED ? 'text-bg-primary' :
+                                                a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CONFIRMED ? 'bg-success-subtle text-success-emphasis border border-success-subtle' :
+                                                a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CANCELED ? 'text-bg-danger' :
+                                                a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).COMPLETED ? 'text-bg-success' :
+                                                a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).NO_SHOW ? 'text-bg-warning' :
+                                                'text-bg-secondary'
+                                        )}"
+                                              th:text="${a.status}"></span>
+
+                                        <div class="dropdown mt-2">
+                                            <button class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                                    type="button"
+                                                    th:id="${'apptStatusDropdownMobile_' + a.id}"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                Cambiar
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                th:attr="aria-labelledby=${'apptStatusDropdownMobile_' + a.id}">
+                                                <li th:each="s : ${statusOrder}">
+                                                    <form th:action="@{/appointments/status/{id}(id=${a.id})}" method="post" class="px-2">
+                                                        <input type="hidden" name="status" th:value="${s}">
+                                                        <input type="hidden" name="redirect" th:value="@{/appointments/agenda(date=${date})}">
+                                                        <button type="submit" class="dropdown-item" th:text="${s}"></button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -115,11 +146,46 @@
                                     <td th:text="${a.client.firstName} + ' ' + ${a.client.lastName}"></td>
                                     <td th:text="${a.technician.name} + ' ' + ${a.technician.lastName}"></td>
                                     <td>
-                                        <span th:if="${a.services != null and !a.services.isEmpty()}"
-                                              th:text="${#strings.listJoin(a.services.![service.name], ', ')}"></span>
+                                        <span th:if="${a.services != null and !a.services.isEmpty()}">
+                                            <span th:each="aps, iter : ${a.services}">
+                                                <span th:if="${aps.service != null}" th:text="${aps.service.name}"></span><span th:if="${aps.service != null and !iter.last}">, </span>
+                                            </span>
+                                        </span>
                                         <span th:if="${a.services == null or a.services.isEmpty()}">—</span>
                                     </td>
-                                    <td><span class="badge text-bg-secondary" th:text="${a.status}"></span></td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                            <span th:class="${'badge ' + (
+                                                    a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CREATED ? 'text-bg-primary' :
+                                                    a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CONFIRMED ? 'bg-success-subtle text-success-emphasis border border-success-subtle' :
+                                                    a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).CANCELED ? 'text-bg-danger' :
+                                                    a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).COMPLETED ? 'text-bg-success' :
+                                                    a.status == T(com.demoApp.demoApp.entity.AppointmentStatus).NO_SHOW ? 'text-bg-warning' :
+                                                    'text-bg-secondary'
+                                            )}"
+                                                  th:text="${a.status}"></span>
+
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                                        type="button"
+                                                        th:id="${'apptStatusDropdown_' + a.id}"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                    Cambiar
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                    th:attr="aria-labelledby=${'apptStatusDropdown_' + a.id}">
+                                                    <li th:each="s : ${statusOrder}">
+                                                        <form th:action="@{/appointments/status/{id}(id=${a.id})}" method="post" class="px-2">
+                                                            <input type="hidden" name="status" th:value="${s}">
+                                                            <input type="hidden" name="redirect" th:value="@{/appointments/agenda(date=${date})}">
+                                                            <button type="submit" class="dropdown-item" th:text="${s}"></button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <tr th:if="${appointments == null or appointments.isEmpty()}">
                                     <td colspan="5" class="text-muted text-center py-4">No hay citas para este día.</td>
@@ -140,4 +206,3 @@
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
-

@@ -78,6 +78,7 @@ public class AppointmentController {
 
         model.addAttribute("date", target);
         model.addAttribute("appointments", appointmentServiceManager.getAgendaRange(start, end));
+        model.addAttribute("statusOrder", List.of("CREATED", "CONFIRMED", "COMPLETED", "CANCELED", "NO_SHOW"));
         return "administration/appointments/agenda";
     }
 
