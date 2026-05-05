@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
 <div th:fragment="header">
@@ -18,12 +19,12 @@
       </button>
     </a>
 
-    <hr class="text-secondary">
+    <hr class="text-secondary" sec:authorize="hasRole('ADMIN')">
 
     <ul class="nav nav-pills flex-column mb-auto">
 
       <!-- Dashboard -->
-      <li class="nav-item">
+      <li class="nav-item" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/admin}"
            class="nav-link sidebar-link"
            th:classappend="${position == 'dashboard'} ? ' active bg-primary'">
@@ -32,7 +33,7 @@
       </li>
 
       <!-- Servicios -->
-      <li>
+      <li sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/services}"
            class="nav-link sidebar-link"
            th:classappend="${position == 'services'} ? ' active bg-primary'">
@@ -62,9 +63,9 @@
 
     <hr class="text-secondary">
 
-    <small class="text-secondary">Seguridad</small>
+    <small class="text-secondary" sec:authorize="hasRole('ADMIN')">Seguridad</small>
 
-    <ul class="nav nav-pills flex-column mt-2">
+    <ul class="nav nav-pills flex-column mt-2" sec:authorize="hasRole('ADMIN')">
 
       <!-- Usuarios -->
       <li>
