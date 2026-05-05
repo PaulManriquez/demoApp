@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -34,7 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/","/home","/login","/css/**","/bootstrap/**","/images/**","/js/**","/favicon.ico").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/services/**").hasRole("ADMIN")
-                        .requestMatchers("/appointments/**").hasRole("ADMIN")
+                        .requestMatchers("/appointments/**").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/clients/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/roles/**").hasRole("ADMIN")
@@ -42,7 +43,7 @@ public class SecurityConfig {
         )
                 .formLogin(form->form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/admin",true)/*Default success url redirect*/
+                        .successHandler(roleBasedSuccessHandler())
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
@@ -50,6 +51,27 @@ public class SecurityConfig {
                 .logout(logout -> logout.permitAll());
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler roleBasedSuccessHandler() {
+        return (request, response, authentication) -> {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+            if (isAdmin) {
+                response.sendRedirect("/admin");
+                return;
+            }
+
+            boolean isTechnician = authentication.getAuthorities().stream()
+                    .anyMatch(a -> "ROLE_TECHNICIAN".equals(a.getAuthority()));
+            if (isTechnician) {
+                response.sendRedirect("/appointments");
+                return;
+            }
+
+            response.sendRedirect("/");
+        };
     }
 
     @Bean
