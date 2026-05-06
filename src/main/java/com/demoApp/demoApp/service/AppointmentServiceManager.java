@@ -42,6 +42,10 @@ public class AppointmentServiceManager {
         return appointmentRepository.findForAgendaRangeWithDetails(startInclusive, endExclusive);
     }
 
+    public List<Appointment> getAgendaRangeForTechnician(LocalDateTime startInclusive, LocalDateTime endExclusive, int technicianUserId) {
+        return appointmentRepository.findForAgendaRangeWithDetailsForTechnician(startInclusive, endExclusive, technicianUserId);
+    }
+
     public Optional<Appointment> getNextAppointment(LocalDateTime now) {
         List<Appointment> items = appointmentRepository.findNextActiveAppointments(
                 now,

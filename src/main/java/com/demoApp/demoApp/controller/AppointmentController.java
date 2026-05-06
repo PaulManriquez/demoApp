@@ -10,6 +10,7 @@ import com.demoApp.demoApp.repository.ClientsRepository;
 import com.demoApp.demoApp.repository.UserRepository;
 import com.demoApp.demoApp.service.AppointmentServiceManager;
 import com.demoApp.demoApp.service.ServiceOfferingService;
+import com.demoApp.demoApp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,18 +44,21 @@ public class AppointmentController {
     private final ClientsRepository clientsRepository;
     private final UserRepository userRepository;
     private final ServiceOfferingService serviceOfferingService;
+    private final UserService userService;
 
     @Autowired
     public AppointmentController(
             AppointmentServiceManager appointmentServiceManager,
             ClientsRepository clientsRepository,
             UserRepository userRepository,
-            ServiceOfferingService serviceOfferingService
+            ServiceOfferingService serviceOfferingService,
+            UserService userService
     ) {
         this.appointmentServiceManager = appointmentServiceManager;
         this.clientsRepository = clientsRepository;
         this.userRepository = userRepository;
         this.serviceOfferingService = serviceOfferingService;
+        this.userService = userService;
     }
 
     @GetMapping({"", "/"})
@@ -77,7 +81,16 @@ public class AppointmentController {
         LocalDateTime end = target.plusDays(1).atStartOfDay();
 
         model.addAttribute("date", target);
-        model.addAttribute("appointments", appointmentServiceManager.getAgendaRange(start, end));
+        User current = userService.getCurrentlyAuthenticatedUser();
+        boolean isAdmin = current.getRoles().stream().anyMatch(r -> "ADMIN".equals(r.getName()));
+        boolean isTechnician = current.getRoles().stream().anyMatch(r -> "TECHNICIAN".equals(r.getName()));
+
+        if (!isAdmin && isTechnician) {
+            model.addAttribute("appointments",
+                    appointmentServiceManager.getAgendaRangeForTechnician(start, end, current.getId()));
+        } else {
+            model.addAttribute("appointments", appointmentServiceManager.getAgendaRange(start, end));
+        }
         model.addAttribute("statusOrder", List.of("CREATED", "CONFIRMED", "COMPLETED", "CANCELED", "NO_SHOW"));
         return "administration/appointments/agenda";
     }

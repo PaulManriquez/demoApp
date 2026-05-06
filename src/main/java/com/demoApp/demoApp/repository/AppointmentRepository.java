@@ -59,6 +59,24 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     );
 
     @Query("""
+        SELECT DISTINCT a
+        FROM Appointment a
+        JOIN FETCH a.client
+        JOIN FETCH a.technician
+        LEFT JOIN FETCH a.services aps
+        LEFT JOIN FETCH aps.service s
+        WHERE a.startAt >= :startInclusive
+          AND a.startAt < :endExclusive
+          AND a.technician.id = :technicianUserId
+        ORDER BY a.startAt ASC
+        """)
+    List<Appointment> findForAgendaRangeWithDetailsForTechnician(
+            @Param("startInclusive") LocalDateTime startInclusive,
+            @Param("endExclusive") LocalDateTime endExclusive,
+            @Param("technicianUserId") int technicianUserId
+    );
+
+    @Query("""
         SELECT a
         FROM Appointment a
         JOIN FETCH a.client
