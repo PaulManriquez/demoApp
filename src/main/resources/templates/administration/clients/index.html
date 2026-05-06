@@ -132,7 +132,7 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm align-middle">
+                            <table class="table table-sm table-hover align-middle admin-table">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -152,22 +152,27 @@
                                         <span th:if="${!c.active}" class="badge bg-secondary">No</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm"
-                                                th:data-id="${c.id}"
-                                                th:data-firstName="${c.firstName}"
-                                                th:data-lastName="${c.lastName}"
-                                                th:data-phone="${c.phone}"
-                                                th:data-address="${c.address}"
-                                                onclick="showEditClientModal(this)">
-                                            Edit
-                                        </button>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <button class="btn btn-primary btn-sm"
+                                                    th:data-id="${c.id}"
+                                                    th:data-firstName="${c.firstName}"
+                                                    th:data-lastName="${c.lastName}"
+                                                    th:data-phone="${c.phone}"
+                                                    th:data-address="${c.address}"
+                                                    onclick="showEditClientModal(this)">
+                                                Editar
+                                            </button>
 
-                                        <a class="btn btn-sm"
-                                           th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
-                                           th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
-                                            <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
-                                        </a>
+                                            <a class="btn btn-sm"
+                                               th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
+                                               th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
+                                                <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
+                                            </a>
+                                        </div>
                                     </td>
+                                </tr>
+                                <tr th:if="${clients == null or clients.isEmpty()}">
+                                    <td colspan="5" class="text-muted text-center py-4">No hay clientes.</td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -202,7 +202,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm align-middle">
+                            <table class="table table-sm table-hover align-middle admin-table">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -228,19 +228,24 @@
                                         <span th:each="r : ${u.roles}" class="badge bg-dark me-1" th:text="${r.name}"></span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm"
-                                                th:data-id="${u.id}"
-                                                th:data-name="${u.name}"
-                                                th:data-lastName="${u.lastName}"
-                                                th:data-username="${u.username}"
-                                                th:data-email="${u.email}"
-                                                th:data-phone="${u.phone}"
-                                                th:data-status="${u.status}"
-                                                th:data-roleIds="${#strings.listJoin(u.roles.![id], ',')}"
-                                                onclick="showEditUserModal(this)">
-                                            Edit
-                                        </button>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <button class="btn btn-primary btn-sm"
+                                                    th:data-id="${u.id}"
+                                                    th:data-name="${u.name}"
+                                                    th:data-lastName="${u.lastName}"
+                                                    th:data-username="${u.username}"
+                                                    th:data-email="${u.email}"
+                                                    th:data-phone="${u.phone}"
+                                                    th:data-status="${u.status}"
+                                                    th:data-roleIds="${#strings.listJoin(u.roles.![id], ',')}"
+                                                    onclick="showEditUserModal(this)">
+                                                Editar
+                                            </button>
+                                        </div>
                                     </td>
+                                </tr>
+                                <tr th:if="${users == null or users.isEmpty()}">
+                                    <td colspan="7" class="text-muted text-center py-4">No hay usuarios.</td>
                                 </tr>
                                 </tbody>
                             </table>

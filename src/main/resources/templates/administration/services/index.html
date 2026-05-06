@@ -173,7 +173,7 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm align-middle">
+                            <table class="table table-sm table-hover align-middle admin-table">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -197,24 +197,29 @@
                                         <span th:if="${!s.visible}" class="badge bg-secondary">No</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm"
-                                                th:data-id="${s.id}"
-                                                th:data-name="${s.name}"
-                                                th:data-category="${s.category}"
-                                                th:data-durationMinutes="${s.durationMinutes}"
-                                                th:data-price="${s.price}"
-                                                th:data-description="${s.description}"
-                                                th:data-visible="${s.visible}"
-                                                onclick="showEditServiceModal(this)">
-                                            Edit
-                                        </button>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <button class="btn btn-primary btn-sm"
+                                                    th:data-id="${s.id}"
+                                                    th:data-name="${s.name}"
+                                                    th:data-category="${s.category}"
+                                                    th:data-durationMinutes="${s.durationMinutes}"
+                                                    th:data-price="${s.price}"
+                                                    th:data-description="${s.description}"
+                                                    th:data-visible="${s.visible}"
+                                                    onclick="showEditServiceModal(this)">
+                                                Editar
+                                            </button>
 
-                                        <a class="btn btn-sm"
-                                           th:classappend="${s.visible} ? ' btn-outline-danger' : ' btn-outline-success'"
-                                           th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
-                                            <span th:text="${s.visible} ? 'Deshabilitar' : 'Habilitar'"></span>
-                                        </a>
+                                            <a class="btn btn-sm"
+                                               th:classappend="${s.visible} ? ' btn-outline-danger' : ' btn-outline-success'"
+                                               th:href="@{/services/visibility/toggle/{id}(id=${s.id})}">
+                                                <span th:text="${s.visible} ? 'Deshabilitar' : 'Habilitar'"></span>
+                                            </a>
+                                        </div>
                                     </td>
+                                </tr>
+                                <tr th:if="${services == null or services.isEmpty()}">
+                                    <td colspan="7" class="text-muted text-center py-4">No hay servicios.</td>
                                 </tr>
                                 </tbody>
                             </table>

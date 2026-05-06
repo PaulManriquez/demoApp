@@ -45,6 +45,35 @@
     white-space: nowrap;
 }
 
+.admin-page .admin-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    overflow: hidden; /* keeps rounded corners on some browsers */
+    background: var(--admin-surface);
+}
+
+.admin-page .admin-table thead th {
+    background: rgba(255, 255, 255, .85);
+    border-bottom: 1px solid var(--admin-border);
+    font-weight: 700;
+    color: var(--admin-text);
+}
+
+.admin-page .admin-table tbody td {
+    border-top: 1px solid var(--admin-border);
+}
+
+.admin-page .admin-table tbody tr:hover > * {
+    background: rgba(59, 130, 246, .06);
+}
+
+.admin-page .admin-table th,
+.admin-page .admin-table td {
+    padding: .6rem .75rem;
+}
+
 .admin-page .btn {
     border-radius: 10px;
 }

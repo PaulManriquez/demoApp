@@ -67,7 +67,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm align-middle">
+                            <table class="table table-sm table-hover align-middle admin-table">
                                 <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -78,6 +78,9 @@
                                 <tr th:each="r : ${roles}">
                                     <td th:text="${r.id}"></td>
                                     <td th:text="${r.name}"></td>
+                                </tr>
+                                <tr th:if="${roles == null or roles.isEmpty()}">
+                                    <td colspan="2" class="text-muted text-center py-4">No hay roles.</td>
                                 </tr>
                                 </tbody>
                             </table>
