@@ -9,10 +9,10 @@
 
     <!-- Brand -->
     <a th:href="@{/admin}"
-       class="d-flex align-items-center justify-content-between mb-3 mb-md-0 text-decoration-none">
-      <span class="fs-5 brand">Agenda / Admin</span>
+       class="d-flex align-items-center justify-content-between mb-3 mb-md-0 text-decoration-none admin-sidebar-brand">
+      <span class="fs-5 brand">Agenda</span>
       <button type="button"
-              class="btn btn-sm btn-outline-secondary d-md-none"
+              class="btn btn-sm btn-outline-secondary d-md-none admin-sidebar-close"
               data-bs-dismiss="offcanvas"
               aria-label="Close">
         X
@@ -21,7 +21,8 @@
 
     <hr class="text-secondary" sec:authorize="hasRole('ADMIN')">
 
-    <ul class="nav nav-pills flex-column mb-auto">
+    <ul class="nav nav-pills flex-column mb-auto"
+        th:classappend="${#authorization.expression('hasRole(''TECHNICIAN'') and !hasRole(''ADMIN'')')} ? ' mt-3 pt-2 border-top' : ''">
 
       <!-- Dashboard -->
       <li class="nav-item" sec:authorize="hasRole('ADMIN')">
