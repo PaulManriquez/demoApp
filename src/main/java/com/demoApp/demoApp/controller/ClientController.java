@@ -2,6 +2,7 @@ package com.demoApp.demoApp.controller;
 
 import com.demoApp.demoApp.entity.Client;
 import com.demoApp.demoApp.model.Message;
+import com.demoApp.demoApp.service.AppointmentServiceManager;
 import com.demoApp.demoApp.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -22,10 +24,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ClientController {
 
     private final ClientService clientService;
+    private final AppointmentServiceManager appointmentServiceManager;
 
     @Autowired
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, AppointmentServiceManager appointmentServiceManager) {
         this.clientService = clientService;
+        this.appointmentServiceManager = appointmentServiceManager;
     }
 
     @GetMapping({"", "/"})
@@ -68,6 +72,16 @@ public class ClientController {
         return "redirect:/clients/";
     }
 
+    @GetMapping("/{id}/history")
+    public String clientHistory(@PathVariable("id") int id, Model model) {
+        Client client = clientService.getClientById(id);
+        model.addAttribute("client", client);
+        model.addAttribute("appointments", appointmentServiceManager.getAllAppointmentsForClient(id));
+        model.addAttribute("statusOrder", java.util.List.of("CREATED", "CONFIRMED", "COMPLETED", "CANCELED", "NO_SHOW"));
+        model.addAttribute("position", "clients");
+        return "administration/clients/history";
+    }
+
     @ModelAttribute
     public void setGenerics(Model model) {
         model.addAttribute("position", "clients");
@@ -83,4 +97,3 @@ public class ClientController {
         return true;
     }
 }
-

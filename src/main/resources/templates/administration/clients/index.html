@@ -103,20 +103,25 @@
                                 </div>
 
                                 <div class="actions mt-3 d-flex gap-2">
-                                    <button class="btn btn-light btn-sm"
-                                            th:data-id="${c.id}"
-                                            th:data-firstName="${c.firstName}"
-                                            th:data-lastName="${c.lastName}"
-                                            th:data-phone="${c.phone}"
-                                            th:data-address="${c.address}"
-                                            onclick="showEditClientModal(this)">
-                                        Editar
-                                    </button>
+                                            <button class="btn btn-light btn-sm"
+                                                    th:data-id="${c.id}"
+                                                    th:data-firstName="${c.firstName}"
+                                                    th:data-lastName="${c.lastName}"
+                                                    th:data-phone="${c.phone}"
+                                                    th:data-address="${c.address}"
+                                                    onclick="showEditClientModal(this)">
+                                                Editar
+                                            </button>
 
-                                    <a class="btn btn-sm"
-                                       th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
-                                       th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
-                                        <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
+                                            <a class="btn btn-outline-primary btn-sm"
+                                               th:href="@{/clients/{id}/history(id=${c.id})}">
+                                                Historial
+                                            </a>
+
+                                            <a class="btn btn-sm"
+                                               th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"
+                                               th:href="@{/clients/status/toggle/{id}(id=${c.id})}">
+                                                <span th:text="${c.active} ? 'Deshabilitar' : 'Habilitar'"></span>
                                     </a>
                                 </div>
                             </div>
@@ -162,6 +167,11 @@
                                                     onclick="showEditClientModal(this)">
                                                 Editar
                                             </button>
+
+                                            <a class="btn btn-outline-primary btn-sm"
+                                               th:href="@{/clients/{id}/history(id=${c.id})}">
+                                                Historial
+                                            </a>
 
                                             <a class="btn btn-sm"
                                                th:classappend="${c.active} ? ' btn-outline-danger' : ' btn-outline-success'"

@@ -69,6 +69,10 @@ public class AppointmentServiceManager {
         );
     }
 
+    public List<Appointment> getAllAppointmentsForClient(int clientId) {
+        return appointmentRepository.findAllForClientWithDetails(clientId);
+    }
+
     @Transactional
     public Message updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         Appointment appointment = appointmentRepository.findById(appointmentId)

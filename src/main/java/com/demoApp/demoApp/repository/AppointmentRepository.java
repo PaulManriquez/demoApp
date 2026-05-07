@@ -121,4 +121,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             @Param("endExclusive") LocalDateTime endExclusive,
             @Param("activeStatuses") List<AppointmentStatus> activeStatuses
     );
+
+    @Query("""
+        SELECT DISTINCT a
+        FROM Appointment a
+        JOIN FETCH a.client
+        JOIN FETCH a.technician
+        LEFT JOIN FETCH a.services aps
+        LEFT JOIN FETCH aps.service s
+        WHERE a.client.id = :clientId
+        ORDER BY a.startAt DESC
+        """)
+    List<Appointment> findAllForClientWithDetails(
+            @Param("clientId") int clientId
+    );
 }

@@ -25,6 +25,11 @@ public class ClientService {
         return clientsRepository.findAll();
     }
 
+    public Client getClientById(int clientId) {
+        return clientsRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no existe"));
+    }
+
     public Message createClient(Client client) {
         if (client.getId() != null) {
             return new Message("El cliente ya existe", false);
