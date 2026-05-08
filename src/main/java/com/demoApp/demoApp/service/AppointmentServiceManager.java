@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,16 +23,19 @@ public class AppointmentServiceManager {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentServiceRepository appointmentServiceRepository;
     private final ServiceOfferingRepository serviceOfferingRepository;
+    private final EmailService emailService;
 
     @Autowired
     public AppointmentServiceManager(
             AppointmentRepository appointmentRepository,
             AppointmentServiceRepository appointmentServiceRepository,
-            ServiceOfferingRepository serviceOfferingRepository
+            ServiceOfferingRepository serviceOfferingRepository,
+            EmailService emailService
     ) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentServiceRepository = appointmentServiceRepository;
         this.serviceOfferingRepository = serviceOfferingRepository;
+        this.emailService = emailService;
     }
 
     public List<Appointment> getCalendarRange(LocalDateTime startInclusive, LocalDateTime endExclusive) {
@@ -120,6 +124,37 @@ public class AppointmentServiceManager {
             link.setService(serviceOffering);
             appointmentServiceRepository.save(link);
         }
+
+        // =============================================================================================================
+        // ( Get the current authenticated user before loose context in the Async method |
+        //                                                                emailService.sendAppointmentCreatedToAdmin())
+        // Get the current security context and Send email notification after the appointment is fully created.
+        String createdBy = org.springframework.security.core.context.SecurityContextHolder.getContext() != null
+                && org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication() != null
+                ? org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName()
+                : "(desconocido)";
+
+        // =============================================================================================================
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String clientName = saved.getClient() != null
+                ? (saved.getClient().getFirstName() + " " + saved.getClient().getLastName())
+                : "(sin cliente)";
+        String techName = saved.getTechnician() != null
+                ? (saved.getTechnician().getName() + " " + saved.getTechnician().getLastName())
+                : "(sin tecnico)";
+
+        String subject = "Nueva cita creada";
+        String body = "Se creo una nueva cita.\n\n"
+                + "Fecha/hora: " + (saved.getStartAt() != null ? saved.getStartAt().format(dtf) : "(sin fecha)") + "\n"
+                + "Cliente: " + clientName + "\n"
+                + "Tecnico que atendera: " + techName + "\n"
+                + "Status de cita: " + (saved.getStatus() != null ? saved.getStatus().name() : "(sin status)") + "\n"
+                + "Usuario quien creo la cita: " + createdBy + "\n";
+
+        // Send body with the contex
+        // (to get the current authenticated user before loose context in the Async method | emailService.sendAppointmentCreatedToAdmin())
+        emailService.sendAppointmentCreatedToAdmin(subject, body);
 
         return new Message("Cita creada con exito", true);
     }
