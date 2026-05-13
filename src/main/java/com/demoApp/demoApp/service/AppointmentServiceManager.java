@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -24,18 +27,21 @@ public class AppointmentServiceManager {
     private final AppointmentServiceRepository appointmentServiceRepository;
     private final ServiceOfferingRepository serviceOfferingRepository;
     private final EmailService emailService;
+    private final GoogleCalendarService googleCalendarService;
 
     @Autowired
     public AppointmentServiceManager(
             AppointmentRepository appointmentRepository,
             AppointmentServiceRepository appointmentServiceRepository,
             ServiceOfferingRepository serviceOfferingRepository,
-            EmailService emailService
+            EmailService emailService,
+            GoogleCalendarService googleCalendarService
     ) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentServiceRepository = appointmentServiceRepository;
         this.serviceOfferingRepository = serviceOfferingRepository;
         this.emailService = emailService;
+        this.googleCalendarService = googleCalendarService;
     }
 
     public List<Appointment> getCalendarRange(LocalDateTime startInclusive, LocalDateTime endExclusive) {
@@ -116,6 +122,7 @@ public class AppointmentServiceManager {
 
         Appointment saved = appointmentRepository.save(appointment);
 
+        StringBuilder serviceNames = new StringBuilder();
         for (Integer serviceId : serviceIds) {
             ServiceOffering serviceOffering = serviceOfferingRepository.findById(serviceId)
                     .orElseThrow(() -> new IllegalArgumentException("Servicio no existe"));
@@ -123,6 +130,11 @@ public class AppointmentServiceManager {
             link.setAppointment(saved);
             link.setService(serviceOffering);
             appointmentServiceRepository.save(link);
+
+            if (!serviceNames.isEmpty()) {
+                serviceNames.append(", ");
+            }
+            serviceNames.append(serviceOffering.getName());
         }
 
         // =============================================================================================================
@@ -152,9 +164,42 @@ public class AppointmentServiceManager {
                 + "Status de cita: " + (saved.getStatus() != null ? saved.getStatus().name() : "(sin status)") + "\n"
                 + "Usuario quien creo la cita: " + createdBy + "\n";
 
-        // Send body with the contex
-        // (to get the current authenticated user before loose context in the Async method | emailService.sendAppointmentCreatedToAdmin())
-        emailService.sendAppointmentCreatedToAdmin(subject, body);
+        // Build iCalendar invite (RFC 5545). Gmail will show this as a calendar invitation.
+        ZoneId zone = ZoneId.systemDefault();
+        ZonedDateTime startZdt = saved.getStartAt() != null ? saved.getStartAt().atZone(zone) : null;
+        ZonedDateTime endZdt = saved.getEndAt() != null ? saved.getEndAt().atZone(zone) : null;
+        DateTimeFormatter icsFmt = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+        String dtStampUtc = ZonedDateTime.now(ZoneOffset.UTC).format(icsFmt);
+        String dtStartUtc = startZdt != null ? startZdt.withZoneSameInstant(ZoneOffset.UTC).format(icsFmt) : "";
+        String dtEndUtc = endZdt != null ? endZdt.withZoneSameInstant(ZoneOffset.UTC).format(icsFmt) : "";
+
+        String uid = "appointment-" + saved.getId() + "@demoApp";
+        String summary = "Cita: " + clientName;
+        String description = ("Cliente: " + clientName + "\\n"
+                + "Tecnico: " + techName + "\\n"
+                + "Servicios: " + (serviceNames.isEmpty() ? "-" : serviceNames) + "\\n"
+                + "Creada por: " + createdBy + "\\n"
+                + "Status: " + (saved.getStatus() != null ? saved.getStatus().name() : "-")
+        ).replace("\n", "\\n");
+
+        String ics = "BEGIN:VCALENDAR\r\n"
+                + "PRODID:-//demoApp//Appointments//ES\r\n"
+                + "VERSION:2.0\r\n"
+                + "CALSCALE:GREGORIAN\r\n"
+                + "METHOD:REQUEST\r\n"
+                + "BEGIN:VEVENT\r\n"
+                + "UID:" + uid + "\r\n"
+                + "DTSTAMP:" + dtStampUtc + "\r\n"
+                + (dtStartUtc.isBlank() ? "" : "DTSTART:" + dtStartUtc + "\r\n")
+                + (dtEndUtc.isBlank() ? "" : "DTEND:" + dtEndUtc + "\r\n")
+                + "SUMMARY:" + summary + "\r\n"
+                + "DESCRIPTION:" + description + "\r\n"
+                + "END:VEVENT\r\n"
+                + "END:VCALENDAR\r\n";
+
+        emailService.sendAppointmentCreatedInviteToAdmin(subject, body, ics);
+        // Also insert directly into the admin's Google Calendar (requires OAuth connect first).
+        googleCalendarService.createEventForAppointment(saved, createdBy);
 
         return new Message("Cita creada con exito", true);
     }

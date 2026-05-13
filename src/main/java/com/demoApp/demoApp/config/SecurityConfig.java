@@ -30,14 +30,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-        // Roles must be updated, for now we will let only admin
-        http.authorizeHttpRequests( auth-> auth
-                .requestMatchers("/","/home","/login","/css/**","/bootstrap/**","/images/**","/js/**","/favicon.ico").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/services/**").hasRole("ADMIN")
-                        .requestMatchers("/appointments/**").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/clients/**").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+		// Roles must be updated, for now we will let only admin
+		http.authorizeHttpRequests( auth-> auth
+				.requestMatchers("/","/home","/login","/css/**","/bootstrap/**","/images/**","/js/**","/favicon.ico").permitAll()
+						.requestMatchers("/google/**").hasRole("ADMIN")
+						.requestMatchers("/admin/**").hasRole("ADMIN")
+						.requestMatchers("/services/**").hasRole("ADMIN")
+						.requestMatchers("/appointments/**").hasAnyRole("ADMIN", "TECHNICIAN")
+						.requestMatchers("/clients/**").hasAnyRole("ADMIN", "TECHNICIAN")
+						.requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/roles/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
